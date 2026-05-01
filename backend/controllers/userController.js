@@ -1,4 +1,7 @@
 import { User } from "../models/userModel.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { verifyEmail } from "../emailVerify/verifyEmail.js";
 
 export const register = async (req, res) => {
   try {
@@ -16,12 +19,22 @@ export const register = async (req, res) => {
         message: "User already exists",
       });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await User.create({
       firstName,
       lastName,
       email,
-      password,
+      password: hashedPassword,
     });
+
+    const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, {
+      expiresIn: "10m",
+    });
+    verifyEmail(token, email); // send email from here
+    newUser.token = token;
+
     await newUser.save();
     return res.status(201).json({
       success: true,
@@ -35,3 +48,109 @@ export const register = async (req, res) => {
     });
   }
 };
+
+export const verify = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(400).json({
+        success: false,
+        message: "Authentication token is missing or invalid ",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        res.status(400).json({
+          success: false,
+          message: "The registration token has expired",
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: "Token varification failed ",
+      });
+    }
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    user.token = null;
+    user.isVerified = true;
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+
+
+};
+
+export const reVerify = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Check email
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // 2. Find user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 3. Already verified?
+    if (user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "User already verified",
+      });
+    }
+
+    // 4. Generate new token
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "10m",
+    });
+
+    // 5. Save token
+    user.token = token;
+    await user.save();
+
+    // 6. Send email again
+    await verifyEmail(token, email);
+
+    return res.status(200).json({
+      success: true,
+      message: "Verification email sent again",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
