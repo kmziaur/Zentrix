@@ -2,6 +2,8 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { verifyEmail } from "../emailVerify/verifyEmail.js";
+import { Session } from "../models/sessionModel.js";
+import { sendOtpEmail } from "../emailVerify/sendOtpEmail.js";
 
 export const register = async (req, res) => {
   try {
@@ -95,8 +97,6 @@ export const verify = async (req, res) => {
       message: error.message,
     });
   }
-
-
 };
 
 export const reVerify = async (req, res) => {
@@ -145,6 +145,73 @@ export const reVerify = async (req, res) => {
       success: true,
       message: "Verification email sent again",
     });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify your email first",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const accessToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
+
+    const refreshToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "10d",
+    });
+
+    user.isLoggedIn = true;
+    await user.save();
+
+    const existingSession = await Session.findOne({userId:user._id})
+    if(existingSession)
+    {
+      await Session.deleteOne({userId:user._id})
+    }
+
+    await Session.create({userId:user._id})
+
+    return res.status(200).json({
+      success: true,
+      message:`Welcome Back ${user.firstName}`,
+      accessToken,
+      refreshToken
+    });
 
   } catch (error) {
     return res.status(500).json({
@@ -154,3 +221,83 @@ export const reVerify = async (req, res) => {
   }
 };
 
+export const logout = async (req, res) => {
+  try {
+    const userId = req.user.id; 
+
+    // 1. Find user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 2. Update login status
+    user.isLoggedIn = false;
+    await user.save();
+
+    // 3. Remove session
+    await Session.deleteOne({ userId: userId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Check email
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // 2. Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 3. Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // 4. Set expiry (10 minutes)
+    const otpExpiry =new Date(Date.now() + 10 * 60 * 1000);
+
+    // 5. Save OTP in DB
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    // 6. Send email
+    await sendOtpEmail(otp,email);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to email",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
