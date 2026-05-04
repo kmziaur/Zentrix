@@ -9,14 +9,14 @@ export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
     if (!firstName || !lastName || !email || !password) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "All fields required",
       });
     }
     const user = await User.findOne({ email });
     if (user) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "User already exists",
       });
@@ -318,7 +318,7 @@ export const verifyOTP = async (req, res) => {
 
     user.otp = null;
     user.otpExpiry = null;
-    user.isOtpVerified = true; 
+    user.isOtpVerified = true;
     await user.save();
 
     return res.status(200).json({
@@ -388,4 +388,48 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+export const allUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+    const user = await User.findById(id).select(
+      "-password -otp -otpExpiry -token",
+    );
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
