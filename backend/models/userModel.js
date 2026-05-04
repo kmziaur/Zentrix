@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
     isLoggedIn: { type: Boolean, default: false },
     otp: { type: String, default: null },
     otpExpiry: { type: Date, default: null },
+    isOtpVerified: { type: Boolean, default: false },
     address: { type: String },
     city: { type: String },
     zipCode: { type: String },
@@ -26,5 +27,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-
-export const User = mongoose.model("User",userSchema)
+export const User = mongoose.model("User", userSchema);

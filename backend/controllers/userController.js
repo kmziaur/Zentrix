@@ -103,7 +103,6 @@ export const reVerify = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // 1. Check email
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -111,7 +110,6 @@ export const reVerify = async (req, res) => {
       });
     }
 
-    // 2. Find user
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -121,7 +119,6 @@ export const reVerify = async (req, res) => {
       });
     }
 
-    // 3. Already verified?
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
@@ -129,16 +126,13 @@ export const reVerify = async (req, res) => {
       });
     }
 
-    // 4. Generate new token
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: "10m",
     });
 
-    // 5. Save token
     user.token = token;
     await user.save();
 
-    // 6. Send email again
     await verifyEmail(token, email);
 
     return res.status(200).json({
@@ -198,21 +192,19 @@ export const login = async (req, res) => {
     user.isLoggedIn = true;
     await user.save();
 
-    const existingSession = await Session.findOne({userId:user._id})
-    if(existingSession)
-    {
-      await Session.deleteOne({userId:user._id})
+    const existingSession = await Session.findOne({ userId: user._id });
+    if (existingSession) {
+      await Session.deleteOne({ userId: user._id });
     }
 
-    await Session.create({userId:user._id})
+    await Session.create({ userId: user._id });
 
     return res.status(200).json({
       success: true,
-      message:`Welcome Back ${user.firstName}`,
+      message: `Welcome Back ${user.firstName}`,
       accessToken,
-      refreshToken
+      refreshToken,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -223,9 +215,8 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
-    // 1. Find user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
@@ -234,18 +225,15 @@ export const logout = async (req, res) => {
       });
     }
 
-    // 2. Update login status
     user.isLoggedIn = false;
     await user.save();
 
-    // 3. Remove session
     await Session.deleteOne({ userId: userId });
 
     return res.status(200).json({
       success: true,
       message: "Logged out successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -258,7 +246,6 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // 1. Check email
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -266,7 +253,6 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // 2. Find user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -275,25 +261,20 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // 3. Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // 4. Set expiry (10 minutes)
-    const otpExpiry =new Date(Date.now() + 10 * 60 * 1000);
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-    // 5. Save OTP in DB
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    // 6. Send email
-    await sendOtpEmail(otp,email);
+    await sendOtpEmail(otp, email);
 
     return res.status(200).json({
       success: true,
       message: "OTP sent to email",
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -301,3 +282,110 @@ export const forgotPassword = async (req, res) => {
     });
   }
 };
+
+export const verifyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    if (user.otpExpiry < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired",
+      });
+    }
+
+    user.otp = null;
+    user.otpExpiry = null;
+    user.isOtpVerified = true; 
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+
+    if (!email || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, new password and confirm password are required",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.isOtpVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP not verified",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    user.isOtpVerified = false; // reset flag
+    user.isLoggedIn = false;
+
+    await user.save();
+
+    await Session.deleteOne({ userId: user._id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully. Please login again.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
