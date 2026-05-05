@@ -152,7 +152,7 @@ const Signup = () => {
             </div>
           </CardContent>
 
-          <CardFooter className="flex-col gap-2">
+          <CardFooter className="flex-col gap-2 mt-5">
             <Button
               type="submit"
               disabled={loading}
