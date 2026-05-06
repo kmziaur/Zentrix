@@ -204,6 +204,11 @@ export const login = async (req, res) => {
       message: `Welcome Back ${user.firstName}`,
       accessToken,
       refreshToken,
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        email: user.email,
+      },
     });
   } catch (error) {
     return res.status(500).json({

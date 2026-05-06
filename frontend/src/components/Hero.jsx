@@ -22,7 +22,7 @@ const Hero = () => {
 
           <div className="mt-6 flex flex-col sm:flex-row gap-4">
             <Link to="/products">
-              <Button className="bg-white text-pink-600 hover:bg-gray-100 font-semibold">
+              <Button className="bg-white text-pink-600 hover:bg-blue-700 hover:text-white font-semibold">
                 Shop Now
               </Button>
             </Link>
@@ -30,7 +30,7 @@ const Hero = () => {
             <Link to="/products">
               <Button
                 variant="outline"
-                className="border-white text-gray-700 hover:bg-white hover:text-pink-600"
+                className="border-white bg-blue-600 text-white hover:bg-red-400 hover:text-black"
               >
                 Explore Deals
               </Button>

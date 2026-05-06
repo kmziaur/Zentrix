@@ -14,6 +14,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/userSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +27,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // handle input change
   const handleChange = (e) => {
@@ -35,7 +38,7 @@ const Login = () => {
     }));
   };
 
-  // handle form submit
+  // handle submit
   const submitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -48,23 +51,34 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (res.data.success) {
         toast.success(res.data.message);
 
-        // optional: store token
-        localStorage.setItem("token", res.data.token);
+        const token = res.data.accessToken;
+        const user = res.data.user;
 
-        navigate("/"); // redirect to home/dashboard
+        console.log("TOKEN RECEIVED:", token);
+
+        if (!token) {
+          toast.error("No token received from backend");
+          return;
+        }
+
+        localStorage.setItem("accessToken", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        dispatch(setUser(user));
+
+        navigate("/");
       }
+
     } catch (error) {
       console.log(error.response?.data);
 
-      toast.error(
-        error.response?.data?.message || "Login failed"
-      );
+      toast.error(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -75,15 +89,13 @@ const Login = () => {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your credentials to login
-          </CardDescription>
+          <CardDescription>Enter your credentials to login</CardDescription>
         </CardHeader>
 
         <form onSubmit={submitHandler}>
           <CardContent>
             <div className="flex flex-col gap-3">
-
+              {/* Email */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -97,6 +109,7 @@ const Login = () => {
                 />
               </div>
 
+              {/* Password */}
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
 
@@ -114,17 +127,16 @@ const Login = () => {
                   {showPassword ? (
                     <EyeOff
                       onClick={() => setShowPassword(false)}
-                      className="w-5 h-5 text-gray-700 absolute right-5 bottom-2 cursor-pointer"
+                      className="w-5 h-5 text-gray-700 absolute right-4 top-2 cursor-pointer"
                     />
                   ) : (
                     <Eye
                       onClick={() => setShowPassword(true)}
-                      className="w-5 h-5 text-gray-700 absolute right-5 bottom-2 cursor-pointer"
+                      className="w-5 h-5 text-gray-700 absolute right-4 top-2 cursor-pointer"
                     />
                   )}
                 </div>
               </div>
-
             </div>
           </CardContent>
 
