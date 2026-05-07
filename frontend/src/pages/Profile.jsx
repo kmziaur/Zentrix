@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { setUser } from "@/redux/userSlice";
+import userLogo from "../assets/profile.png";
 
 const Profile = () => {
   const { user } = useSelector((store) => store.user);
@@ -22,12 +23,12 @@ const Profile = () => {
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
-    phone: user?.phone || "",
-    role: user?.role || "",
+    phoneNo: user?.phoneNo || "",
     address: user?.address || "",
     city: user?.city || "",
     zipCode: user?.zipCode || "",
     profilePic: user?.profilePic || "",
+    role: user?.role || "",
   });
 
   const [file, setFile] = useState(null);
@@ -55,14 +56,19 @@ const Profile = () => {
       formData.append("firstName", updateUser.firstName);
       formData.append("lastName", updateUser.lastName);
       formData.append("email", updateUser.email);
-      formData.append("phone", updateUser.phone);
+      formData.append("phoneNo", updateUser.phoneNo);
       formData.append("address", updateUser.address);
       formData.append("city", updateUser.city);
       formData.append("zipCode", updateUser.zipCode);
-      formData.append("role", updateUser.role);
+      // formData.append("role", updateUser.role);
 
       if (file) {
         formData.append("file", file); // image file for backend multer
+      }
+
+      //for debug 
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
       }
 
       const res = await axios.put(
@@ -71,7 +77,7 @@ const Profile = () => {
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            "Content-type": "multipart/form-data",
+            // "Content-type": "multipart/form-data",
           },
         },
       );
@@ -105,18 +111,26 @@ const Profile = () => {
                 {/* profile picture */}
                 <div className="flex flex-col items-center">
                   <img
-                    src="/profile.png"
+                    src={updateUser?.profilePic || userLogo}
                     alt="profile"
                     className="w-32 h-32 rounded-full object-cover border-4 border-pink-800"
                   />
                   <Label className="mt-4 cursor-pointer bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 whitespace-nowrap ">
                     Change Picture
-                    <input type="file" accept="image/*" className="hidden" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
                   </Label>
                 </div>
 
                 {/* profile form */}
-                <form className="space-y-4 shadow-lg p-5 rounded-lg bg-white">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 shadow-lg p-5 rounded-lg bg-white"
+                >
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label className="block text-sm font-medium">
@@ -165,8 +179,8 @@ const Profile = () => {
                     </Label>
                     <Input
                       type="text"
-                      name="phone"
-                      value={updateUser.phone}
+                      name="phoneNo"
+                      value={updateUser.phoneNo}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
                       className="rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -199,7 +213,7 @@ const Profile = () => {
                       Zip Code
                     </Label>
                     <Input
-                      type="number"
+                      type="text"
                       name="zipCode"
                       value={updateUser.zipCode}
                       onChange={handleChange}

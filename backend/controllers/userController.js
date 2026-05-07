@@ -442,12 +442,16 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
+    console.log("REQ.USER:", req.user);
+    console.log("REQ.BODY:", req.body);
+    console.log("REQ.FILE:", req.file);
+
     const userIdToUpdate = req.params.id; //the id of the user we want to update
     const loggedInUser = req.user; // from isAuthenticated middleware
-    const { firstName, lastName, address, city, zipCode, phone, role } =
+    const { firstName, lastName, address, city, zipCode, phoneNo} =
       req.body;
     if (
-      loggedInUser._id.toString() !== userIdToUpdate &&
+      loggedInUser.id.toString() !== userIdToUpdate &&
       loggedInUser.role !== "admin"
     ) {
       return res.status(403).json({
@@ -492,22 +496,21 @@ export const updateUser = async (req, res) => {
     user.address = address || user.address;
     user.city = city || user.city;
     user.zipCode = zipCode || user.zipCode;
-    user.phone = phone || user.phone;
-    user.role = role;
+    user.phoneNo = phoneNo || user.phoneNo;
+    // user.role = role;
     user.profilePic = profilePicUrl;
-    user.profilePicPublicId = profilePicPublicId
+    user.profilePicPublicId = profilePicPublicId;
 
     const updateUser = await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "User updated successfully",
-      user: updateUser
+      message: "Profile updated successfully",
+      user: updateUser,
     });
-
-
-
   } catch (error) {
+    console.log("UPDATE ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
