@@ -8,10 +8,13 @@ import {
   register,
   resetPassword,
   reVerify,
+  updateUser,
   verify,
   verifyOTP,
 } from "../controllers/userController.js";
 import { isAdmin, isAuthenticated } from "../middleware/isAuthenticated.js";
+import { singleUpload } from "../middleware/multer.js";
+
 
 const router = express.Router();
 
@@ -25,5 +28,6 @@ router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.get("/all-user", isAuthenticated, isAdmin, allUser);
 router.get("/get-user/:id", isAuthenticated, isAdmin, getUserById);
+router.put("/update/:id",isAuthenticated,singleUpload,updateUser);
 
 export default router;

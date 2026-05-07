@@ -70,7 +70,7 @@ const Navbar = () => {
             </Link>
 
             {user && (
-              <Link to="/profile">
+              <Link to={`/profile/${user._id}`}>
                 <li>
                   Hello, <span className="text-pink-600">{user.firstName}</span>
                 </li>
