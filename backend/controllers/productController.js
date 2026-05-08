@@ -67,7 +67,7 @@ export const getAllProduct = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Product is unavailable",
-        products:[]
+        products: [],
       });
     }
 
@@ -108,8 +108,8 @@ export const getProductById = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-
+    const { productId } = req.params;
+    const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -118,7 +118,7 @@ export const deleteProduct = async (req, res) => {
     }
 
     // delete images from cloudinary
-    if (product.productImg.length > 0) {
+    if (product.productImg && product.productImg.length > 0) {
       for (let img of product.productImg) {
         await cloudinary.v2.uploader.destroy(img.public_id);
       }
@@ -140,7 +140,8 @@ export const deleteProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const { productId } = req.params;
+    const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({
@@ -149,14 +150,57 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    const { productName, productDesc, productPrice, category, brand } =
-      req.body;
+    const {
+      productName,
+      productDesc,
+      productPrice,
+      category,
+      brand,
+      existingImages,
+    } = req.body;
+
+    let updatedImages = [];
+
+    if (existingImages) {
+      const keepIds = JSON.parse(existingImages);
+      updatedImages = product.productImg.filter((img) =>
+        keepIds.includes(img.public_id),
+      );
+
+      //delete only removed images
+      const removedImages = product.productImg.filter(
+        (img) => !keepIds.includes(img.public_id),
+      );
+
+      for (let img of removedImages) {
+        await cloudinary.uploader.destroy(img.public_id);
+      }
+    } else {
+      updatedImages = product.productImg; //keep all if nothing sent
+    }
+
+    //upload new images if any
+    if (req.files && req.files.length > 0) {
+      for (let file of req.files) {
+        const fileUri = getDataUri(file);
+        const result = await cloudinary.uploader.upload(fileUri, {
+          folder: "mern_products",
+        });
+        updatedImages.push({
+          url: result.secure_url,
+          public_id: result.public_id,
+        });
+      }
+    }
+
+    //update product
 
     product.productName = productName || product.productName;
     product.productDesc = productDesc || product.productDesc;
     product.productPrice = productPrice || product.productPrice;
     product.category = category || product.category;
     product.brand = brand || product.brand;
+    product.productImg = updatedImages;
 
     await product.save();
 

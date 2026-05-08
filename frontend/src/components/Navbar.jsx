@@ -13,8 +13,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
 
-  console.log("TOKEN FROM STORAGE:", localStorage.getItem("accessToken"));
-
   const logoutHandler = async () => {
     try {
       const token = localStorage.getItem("accessToken"); 
