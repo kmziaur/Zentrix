@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -17,22 +17,37 @@ const Profile = () => {
   const params = useParams();
   const userId = params.userId;
 
-  const [avatar, setAvatar] = useState("/profile.png");
   const [selectedOrder, setSelectedOrder] = React.useState(null);
   const [updateUser, setUpdateUser] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    phoneNo: user?.phoneNo || "",
-    address: user?.address || "",
-    city: user?.city || "",
-    zipCode: user?.zipCode || "",
-    profilePic: user?.profilePic || "",
-    role: user?.role || "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNo: "",
+    address: "",
+    city: "",
+    zipCode: "",
+    profilePic: "",
+    role: "",
   });
 
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      setUpdateUser({
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        email: user?.email || "",
+        phoneNo: user?.phoneNo || "",
+        address: user?.address || "",
+        city: user?.city || "",
+        zipCode: user?.zipCode || "",
+        profilePic: user?.profilePic || "",
+        role: user?.role || "",
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setUpdateUser({ ...updateUser, [e.target.name]: e.target.value });
@@ -66,7 +81,7 @@ const Profile = () => {
         formData.append("file", file); // image file for backend multer
       }
 
-      //for debug 
+      //for debug
       for (let pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
@@ -111,7 +126,11 @@ const Profile = () => {
                 {/* profile picture */}
                 <div className="flex flex-col items-center">
                   <img
-                    src={updateUser?.profilePic || userLogo}
+                    src={
+                      updateUser?.profilePic?.trim()
+                        ? updateUser.profilePic
+                        : userLogo
+                    }
                     alt="profile"
                     className="w-32 h-32 rounded-full object-cover border-4 border-pink-800"
                   />
