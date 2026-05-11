@@ -1,23 +1,38 @@
-import React from 'react'
-import { Button } from './ui/button';
+import React from "react";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
-const ProductCard = ({product}) => {
-    const {productImg,productPrice,productName} = product;
+const ProductCard = ({ product, loading }) => {
+  const { productImg, productPrice, productName } = product;
 
   return (
-    <div className='shadow-lg rounded-lg overflow-hidden h-max'>
-        <div className='flex justify-center items-center w-full h-full aspect-square overflow-hidden'>
-            <img src={productImg[0]?.url} alt="" className='w-45.5 h-47.5 transition-transform duration-300 hover:scale-105' />
+    <div className="shadow-lg rounded-lg overflow-hidden h-max">
+      <div className="flex justify-center items-center w-full h-full aspect-square overflow-hidden">
+        {loading ? (
+          <Skeleton className="w-full h-full rounded-lg" />
+        ) : (
+          <img
+            src={productImg[0]?.url}
+            alt=""
+            className="w-45.5 h-47.5 transition-transform duration-300 hover:scale-105"
+          />
+        )}
+      </div>
+      {loading ? (
+        <div className="px-2 space-y-2 my-2">
+          <Skeleton className="w-50 h-4" />
+          <Skeleton className="w-25 h-4" />
+          <Skeleton className="w-37.5 h-8" />
         </div>
-        <div className='px-2 space-y-1'>
-            <h1 className='font-semibold h-12 line-clamp-2'>{productName}</h1>
-            <h2 className='font-bold'>৳{productPrice}</h2>
-            <Button className="bg-pink-600 mb-3 w-full ">Add to Cart</Button>
-
+      ) : (
+        <div className="px-2 space-y-1">
+          <h1 className="font-semibold h-12 line-clamp-2">{productName}</h1>
+          <h2 className="font-bold">৳{productPrice}</h2>
+          <Button className="bg-pink-600 mb-3 w-full ">Add to Cart</Button>
         </div>
-
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;
