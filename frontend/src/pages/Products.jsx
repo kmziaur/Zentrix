@@ -14,11 +14,20 @@ import {
 import ProductCard from "@/components/ProductCard";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import store from "@/redux/Store";
+import { setProducts } from "@/redux/productSlice";
 
 const Products = () => {
+  const { products } = useSelector((store) => store.product);
   const [allProducts, setAllProducts] = useState([]);
-  const [loading,setLoading] = useState(false);
-  const [priceRange,setPriceRange] = useState([0,999999]);
+  const [category, setCategory] = useState("ALL");
+  const [search, setSearch] = useState("");
+  const [brand, setBrand] = useState("ALL");
+  const [loading, setLoading] = useState(false);
+  const [priceRange, setPriceRange] = useState([0, 999999]);
+  const dispatch = useDispatch();
+  const [sortOrder, setSortOrder] = useState("");
 
   const getAllProducts = async () => {
     try {
@@ -28,14 +37,59 @@ const Products = () => {
       );
       if (res.data.success) {
         setAllProducts(res.data.products);
+        dispatch(setProducts(res.data.products));
       }
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (allProducts.length === 0) return;
+
+    let filtered = [...allProducts];
+
+    // Search filter
+    if (search.trim() !== "") {
+      filtered = filtered.filter((product) =>
+        product.productName.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    // Category filter
+    if (category !== "ALL") {
+      filtered = filtered.filter(
+        (product) => product.category.toLowerCase() === category.toLowerCase(),
+      );
+    }
+
+    // Brand filter
+    if (brand !== "ALL") {
+      filtered = filtered.filter(
+        (product) => product.brand.toLowerCase() === brand.toLowerCase(),
+      );
+    }
+
+    // Price filter
+    filtered = filtered.filter(
+      (product) =>
+        product.productPrice >= priceRange[0] &&
+        product.productPrice <= priceRange[1],
+    );
+
+    // Sorting
+    if (sortOrder === "lowToHigh") {
+      filtered.sort((a, b) => a.productPrice - b.productPrice);
+    } else if (sortOrder === "highToLow") {
+      filtered.sort((a, b) => b.productPrice - a.productPrice);
+    }
+
+    dispatch(setProducts(filtered));
+  }, [search, category, brand, sortOrder, priceRange, allProducts, dispatch]);
+
 
   useEffect(() => {
     getAllProducts();
@@ -45,14 +99,24 @@ const Products = () => {
 
   return (
     <div className=" pt-10 pb-10">
-      <div className="mt-30 max-w-7xl mx-auto flex gap-7">
+      <div className="mt-20 max-w-7xl mx-auto flex gap-7">
         {/*sidebar*/}
-        <FilterSidebar allProducts={allProducts} priceRange={priceRange} />
+        <FilterSidebar
+          search={search}
+          setSearch={setSearch}
+          brand={brand}
+          setBrand={setBrand}
+          category={category}
+          setCategory={setCategory}
+          allProducts={allProducts}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+        />
 
         {/* main product section */}
         <div className="flex flex-col flex-1">
           <div className="flex justify-end md-4">
-            <Select>
+            <Select onValueChange={(value)=>setSortOrder(value)} >
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue placeholder="Sort by Price" />
               </SelectTrigger>
@@ -66,8 +130,14 @@ const Products = () => {
           </div>
           {/* product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-7">
-            {allProducts.map((product) => {
-              return <ProductCard key={product._id} product={product} loading={loading} />;
+            {products.map((product) => {
+              return (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                  loading={loading}
+                />
+              );
             })}
           </div>
         </div>

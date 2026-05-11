@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./redux/userSlice";
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
+import Cart from "./pages/Cart";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,15 @@ const router = createBrowserRouter([
       <>
         <Navbar />
         <Products />
+      </>
+    ),
+  },
+  {
+    path: "/cart",
+    element: (
+      <>
+        <Navbar />
+        <Cart />
       </>
     ),
   },
