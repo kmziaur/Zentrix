@@ -15,14 +15,11 @@ const Cart = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
 
-        const res = await axios.get(
-          "http://localhost:8000/api/v1/cart",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const res = await axios.get("http://localhost:8000/api/v1/cart", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         if (res.data.success) {
           dispatch(setCart(res.data.cart));
@@ -46,7 +43,7 @@ const Cart = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (res.data.success) {
@@ -67,7 +64,7 @@ const Cart = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (res.data.success) {
@@ -101,21 +98,18 @@ const Cart = () => {
                 />
 
                 <div>
-                  <h2 className="font-semibold">
+                  <h2 className="line-clamp-2 font-semibold w-110 ">
                     {item.productId?.productName}
                   </h2>
-                  <p className="text-gray-600">
-                    ৳{item.price}
-                  </p>
+                  <p className="text-gray-600">৳{item.price}</p>
                 </div>
               </div>
 
               {/* Quantity Controls */}
               <div className="flex items-center gap-3">
                 <Button
-                  onClick={() =>
-                    updateQuantity(item.productId._id, "decrease")
-                  }
+                  onClick={() => updateQuantity(item.productId._id, "decrease")}
+                  className="bg-pink-700"
                 >
                   -
                 </Button>
@@ -123,13 +117,14 @@ const Cart = () => {
                 <span>{item.quantity}</span>
 
                 <Button
-                  onClick={() =>
-                    updateQuantity(item.productId._id, "increase")
-                  }
+                  onClick={() => updateQuantity(item.productId._id, "increase")}
+                  className="bg-pink-700"
                 >
                   +
                 </Button>
               </div>
+
+              <p className="font-semibold">৳{item.price * item.quantity}</p>
 
               {/* Remove */}
               <Button

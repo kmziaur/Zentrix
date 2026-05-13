@@ -169,27 +169,33 @@ export const removeFromCart = async (req, res) => {
       });
     }
 
+    // Remove item
     cart.items = cart.items.filter(
-      (item) => item.productId.toString() !== productId,
+      (item) => item.productId.toString() !== productId
     );
 
-    // Recalculate total
+    // Recalculate total price
     cart.totalPrice = cart.items.reduce(
       (total, item) => total + item.price * item.quantity,
-      0,
+      0
     );
 
     await cart.save();
 
-    res.status(200).json({
+    const updatedCart = await Cart.findById(cart._id).populate(
+      "items.productId"
+    );
+
+    return res.status(200).json({
       success: true,
       message: "Item removed from cart",
-      cart,
+      cart: updatedCart,
     });
+
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal server error",
     });
