@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
@@ -6,16 +6,17 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
+import { setCart } from "@/redux/productSlice";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { cart } = useSelector((store) => store.product);
 
   const logoutHandler = async () => {
     try {
-      const token = localStorage.getItem("accessToken"); 
+      const token = localStorage.getItem("accessToken");
 
       if (!token) {
         toast.error("No token found");
@@ -50,6 +51,32 @@ const Navbar = () => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) return;
+
+    const fetchCart = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/cart", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.data.success) {
+          dispatch(setCart(res.data.cart));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCart();
+  }, [dispatch]);
+
+  
+
   return (
     <header className="w-full bg-pink-50 fixed z-20 border-b border-pink-200">
       <div className="max-w-7xl mx-auto flex justify-between items-center py-3 px-4">
@@ -80,7 +107,7 @@ const Navbar = () => {
           <Link to="/cart" className="relative">
             <ShoppingCart />
             <span className="bg-pink-500 rounded-full absolute text-white -top-4 -right-5 px-2 ">
-              0
+              {cart?.items?.length || 0}
             </span>
           </Link>
 

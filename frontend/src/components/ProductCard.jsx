@@ -4,9 +4,12 @@ import { Skeleton } from "./ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-
+import { useDispatch } from "react-redux";
+import { setCart } from "@/redux/productSlice";
 
 const ProductCard = ({ product, loading }) => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("accessToken");
   const addToCart = async (productId) => {
@@ -18,13 +21,13 @@ const ProductCard = ({ product, loading }) => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (res.data.success) {
         toast.success("Product added to cart");
+        dispatch(setCart(res.data.cart));
       }
-
     } catch (error) {
       console.log(error);
       toast.error("Failed to add product");
@@ -65,10 +68,7 @@ const ProductCard = ({ product, loading }) => {
 
           <h2 className="font-bold">৳{product.productPrice}</h2>
 
-          <Button
-            onClick={handleAddToCart}
-            className="bg-pink-600 mb-3 w-full"
-          >
+          <Button onClick={handleAddToCart} className="bg-pink-600 mb-3 w-full">
             Add to Cart
           </Button>
         </div>
