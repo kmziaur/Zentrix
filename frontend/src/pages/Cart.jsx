@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { ShoppingBag } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const Cart = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.product);
 
@@ -17,11 +21,11 @@ const Cart = () => {
 
   const SHIPPING_BASE = 60;
 
-  // ================= FORMAT =================
+  // format
   const formatTk = (amount) =>
     new Intl.NumberFormat("en-BD").format(amount || 0);
 
-  // ================= FETCH CART =================
+  //fetch cart
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -44,16 +48,14 @@ const Cart = () => {
     fetchCart();
   }, [dispatch]);
 
-  // ================= SUBTOTAL =================
   const subtotal = useMemo(() => {
     if (!cart?.items) return 0;
     return cart.items.reduce(
       (acc, item) => acc + item.price * item.quantity,
-      0
+      0,
     );
   }, [cart]);
 
-  // ================= SHIPPING (FREE + DISTANCE BASED) =================
   const shipping = useMemo(() => {
     if (subtotal >= 10000) return 0; // free shipping
 
@@ -62,10 +64,8 @@ const Cart = () => {
     return SHIPPING_BASE;
   }, [subtotal, distanceKm]);
 
-  // ================= TOTAL =================
   const total = Math.max(subtotal + shipping - discount, 0);
 
-  // ================= UPDATE QUANTITY =================
   const updateQuantity = async (productId, type) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -73,7 +73,7 @@ const Cart = () => {
       const res = await axios.put(
         "http://localhost:8000/api/v1/cart/update",
         { productId, type },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       if (res.data.success) {
@@ -84,14 +84,13 @@ const Cart = () => {
     }
   };
 
-  // ================= REMOVE ITEM =================
   const removeItem = async (productId) => {
     try {
       const token = localStorage.getItem("accessToken");
 
       const res = await axios.delete(
         `http://localhost:8000/api/v1/cart/remove/${productId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       if (res.data.success) {
@@ -103,7 +102,7 @@ const Cart = () => {
     }
   };
 
-  // ================= COUPON (BACKEND VALIDATION) =================
+  //COUPON (BACKEND VALIDATION)
   const applyCoupon = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -111,7 +110,7 @@ const Cart = () => {
       const res = await axios.post(
         "http://localhost:8000/api/v1/coupon/apply",
         { code: coupon, subtotal },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       if (res.data.success) {
@@ -124,7 +123,7 @@ const Cart = () => {
     }
   };
 
-  // ================= PAYMENT =================
+  // PAYMENT
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -136,7 +135,7 @@ const Cart = () => {
           amount: total,
           items: cart.items,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       if (res.data.url) {
@@ -154,7 +153,30 @@ const Cart = () => {
   return (
     <div className="max-w-6xl mx-auto p-4">
       {!cart?.items?.length ? (
-        <p className="text-center text-gray-500">Your cart is empty</p>
+        <div className="mt-50 flex flex-col items-center justify-center text-center space-y-4">
+          {/* Icon */}
+          <div className="bg-gray-100 p-6 rounded-full animate-bounce">
+            <ShoppingBag size={60} className="text-gray-400" />
+          </div>
+
+          {/* Text */}
+          <h2 className="text-xl font-semibold text-gray-700">
+            Your cart is empty
+          </h2>
+
+          <p className="text-gray-500 max-w-sm">
+            Looks like you haven’t added anything yet. Start exploring our
+            products and find something you’ll love!
+          </p>
+
+          {/* Button */}
+          <button
+            onClick={() => navigate("/products")}
+            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg transition"
+          >
+            Continue Shopping
+          </button>
+        </div>
       ) : (
         <div className="flex flex-col lg:flex-row gap-6  mt-24">
           {/* ITEMS */}
@@ -235,7 +257,9 @@ const Cart = () => {
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                 />
-                <Button onClick={applyCoupon} className="bg-pink-700">Apply</Button>
+                <Button onClick={applyCoupon} className="bg-pink-700">
+                  Apply
+                </Button>
               </div>
 
               <div className="flex justify-between text-green-600">
@@ -248,12 +272,21 @@ const Cart = () => {
                 <span>৳ {formatTk(total)}</span>
               </div>
 
-              <Button
-                className="w-full bg-green-600"
-                onClick={handleCheckout}
-              >
+              <Button className="w-full bg-green-600" onClick={handleCheckout}>
                 Proceed to Payment
               </Button>
+
+              <Button
+                onClick={() => navigate("/products")}
+                className="w-full bg-pink-50 hover:bg-pink-100 border-red text-pink-700 px-6 py-2 rounded-lg transition"
+              >
+                Continue Shopping
+              </Button>
+              <div className="text-sm text-muted-foreground pt-4">
+                <p>* Free shipping on orders over 10000</p>
+                <p>* 30 days return policy</p>
+                <p>* Secure checkout with SSL encryption</p>
+              </div>
             </CardContent>
           </Card>
         </div>
