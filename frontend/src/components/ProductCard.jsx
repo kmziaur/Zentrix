@@ -46,6 +46,7 @@ const ProductCard = ({ product, loading }) => {
           <Skeleton className="w-full h-full rounded-lg" />
         ) : (
           <img
+            onClick={() => navigate(`/products/${product._id}`)}
             src={product.productImg[0]?.url}
             alt={product.productName}
             className="w-45.5 h-47.5 transition-transform duration-300 hover:scale-105"

@@ -76,12 +76,11 @@ const Navbar = () => {
     fetchCart();
   }, [dispatch]);
 
-  console.log(user);
 
   
 
   return (
-    <header className="w-full bg-pink-50 fixed z-20 border-b border-pink-200">
+    <header className="w-full bg-pink-50 fixed top-0 left-0 z-20 border-b border-pink-200">
       <div className="max-w-7xl mx-auto flex justify-between items-center py-3 px-4">
         {/* Logo */}
         <div>

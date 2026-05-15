@@ -24,6 +24,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import UserInfo from "./pages/admin/UserInfo";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import SingleProduct from "./pages/SingleProduct";
 
 const router = createBrowserRouter([
   //Public routes 
@@ -78,6 +79,15 @@ const router = createBrowserRouter([
       <>
         <Navbar />
         <Products />
+      </>
+    ),
+  },
+  {
+    path: "/products/:id",
+    element: (
+      <>
+        <Navbar />
+        <SingleProduct />
       </>
     ),
   },
