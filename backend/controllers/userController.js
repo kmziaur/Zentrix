@@ -209,6 +209,7 @@ export const login = async (req, res) => {
         _id: user._id,
         firstName: user.firstName,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

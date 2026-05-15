@@ -13,6 +13,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector((store) => store.product);
+  const admin = user?.role === "admin"? true : false;
 
   const logoutHandler = async () => {
     try {
@@ -75,6 +76,8 @@ const Navbar = () => {
     fetchCart();
   }, [dispatch]);
 
+  console.log(user);
+
   
 
   return (
@@ -98,6 +101,13 @@ const Navbar = () => {
               <Link to={`/profile/${user._id}`}>
                 <li>
                   Hello, <span className="text-pink-600">{user.firstName}</span>
+                </li>
+              </Link>
+            )}
+            {admin && (
+              <Link to={`/dashboard/sales`}>
+                <li>
+                  Dashboard
                 </li>
               </Link>
             )}

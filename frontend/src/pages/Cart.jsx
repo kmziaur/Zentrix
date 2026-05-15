@@ -174,7 +174,7 @@ const Cart = () => {
             onClick={() => navigate("/products")}
             className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg transition"
           >
-            Continue Shopping
+            Start Shopping
           </button>
         </div>
       ) : (
