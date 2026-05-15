@@ -9,11 +9,24 @@ import VerifyEmail from "./pages/VerifyEmail";
 
 import { useDispatch } from "react-redux";
 import { setUser } from "./redux/userSlice";
+
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 
+import Dashboard from "./pages/Dashboard";
+import AdminSales from "./pages/admin/AdminSales";
+import AddProduct from "./pages/admin/AddProduct";
+import AdminProduct from "./pages/admin/AdminProduct";
+import AdminOrders from "./pages/admin/AdminOrders";
+import ShowUserOrders from "./pages/admin/ShowUserOrders";
+import AdminUsers from "./pages/admin/AdminUsers";
+import UserInfo from "./pages/admin/UserInfo";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
 const router = createBrowserRouter([
+  //Public routes 
   {
     path: "/",
     element: (
@@ -39,13 +52,24 @@ const router = createBrowserRouter([
     path: "/verify/:token",
     element: <VerifyEmail />,
   },
+
+  //user protected routes
   {
     path: "/profile/:userId",
     element: (
-      <>
+      <ProtectedRoute>
         <Navbar />
         <Profile />
-      </>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/cart",
+    element: (
+      <ProtectedRoute>
+        <Navbar />
+        <Cart />
+      </ProtectedRoute>
     ),
   },
   {
@@ -57,14 +81,24 @@ const router = createBrowserRouter([
       </>
     ),
   },
+
+  // admin protected routes
   {
-    path: "/cart",
+    path: "/dashboard",
     element: (
-      <>
-        <Navbar />
-        <Cart />
-      </>
+      <ProtectedRoute adminOnly={true}>
+        <Dashboard />
+      </ProtectedRoute>
     ),
+    children: [
+      { path: "sales", element: <AdminSales /> },
+      { path: "add-product", element: <AddProduct /> },
+      { path: "products", element: <AdminProduct /> },
+      { path: "orders", element: <AdminOrders /> },
+      { path: "users/orders/:userId", element: <ShowUserOrders /> },
+      { path: "user", element: <AdminUsers /> },
+      { path: "user/:id", element: <UserInfo /> },
+    ],
   },
 ]);
 
@@ -80,7 +114,7 @@ const App = () => {
         dispatch(setUser(parsedUser));
       } catch (error) {
         console.log("Invalid user in localStorage");
-        localStorage.removeItem("user"); // cleanup broken data
+        localStorage.removeItem("user");
       }
     }
   }, [dispatch]);

@@ -105,7 +105,7 @@ const Navbar = () => {
               </Link>
             )}
             {admin && (
-              <Link to={`/dashboard/sales`}>
+              <Link to={`/dashboard`}>
                 <li>
                   Dashboard
                 </li>
