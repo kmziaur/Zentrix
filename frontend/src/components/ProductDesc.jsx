@@ -27,6 +27,7 @@ const ProductDesc = ({ product, onAddToCart, loading, initialQuantity = 1 }) => 
       {/* Category */}
       <p className="text-sm text-gray-500 uppercase tracking-wide">
         {product?.category || "N/A"}
+        {product?.brand ? `  |  ${product.brand}` : "" }
       </p>
 
       {/* Product Name */}

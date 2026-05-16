@@ -5,6 +5,7 @@ import userRoute from './routes/userRoute.js'
 import cors from 'cors'
 import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
+import adminRoute from "./routes/adminRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ app.use(cors({
 app.use('/api/v1/user', userRoute)
 app.use('/api/v1/product',productRoute)
 app.use('/api/v1/cart',cartRoute)
+app.use("/api/v1/admin",adminRoute);
 
 // http://localhost:8000/api/v1/user/register
 

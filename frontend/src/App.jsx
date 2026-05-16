@@ -97,6 +97,7 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <ProtectedRoute adminOnly={true}>
+        <Navbar />
         <Dashboard />
       </ProtectedRoute>
     ),
