@@ -15,25 +15,30 @@ export const addToCart = async (req, res) => {
       });
     }
 
+    const quantityToAdd = Number(quantity) > 0 ? Number(quantity) : 1;
     let cart = await Cart.findOne({ userId });
-    // console.log("USER ID:", userId);
-    // console.log("CART BEFORE SAVE:", cart);
     if (!cart) {
       cart = new Cart({
         userId,
-        items: [{ productId, quantity: 1, price: product.productPrice }],
-        totalPrice: product.productPrice,
+        items: [
+          {
+            productId,
+            quantity: quantityToAdd,
+            price: product.productPrice,
+          },
+        ],
+        totalPrice: product.productPrice * quantityToAdd,
       });
     } else {
       const itemIndex = cart.items.findIndex(
         (item) => item.productId.toString() === productId,
       );
       if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += 1;
+        cart.items[itemIndex].quantity += quantityToAdd;
       } else {
         cart.items.push({
           productId,
-          quantity: quantity || 1,
+          quantity: quantityToAdd,
           price: product.productPrice,
         });
       }
