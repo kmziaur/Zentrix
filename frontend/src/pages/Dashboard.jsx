@@ -9,7 +9,6 @@ import {
   ShoppingCart,
   Package,
   Users,
-  DollarSign,
   Loader2,
   LayoutDashboard,
   PlusCircle,
@@ -272,7 +271,7 @@ const Dashboard = () => {
 
               <Card className="border-slate-200/80 shadow-sm">
                 <CardHeader className="flex items-center gap-3">
-                  <DollarSign className="text-pink-600" />
+                  <span className="text-pink-600 text-xl font-semibold">৳</span>
                   <CardTitle>Revenue</CardTitle>
                 </CardHeader>
                 <CardContent>

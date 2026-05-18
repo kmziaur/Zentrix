@@ -22,6 +22,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import ShowUserOrders from "./pages/admin/ShowUserOrders";
 import AdminUsers from "./pages/admin/AdminUsers";
 import UserInfo from "./pages/admin/UserInfo";
+import EditProduct from "./pages/admin/EditProduct";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import SingleProduct from "./pages/SingleProduct";
@@ -104,6 +105,7 @@ const router = createBrowserRouter([
     children: [
       { path: "sales", element: <AdminSales /> },
       { path: "add-product", element: <AddProduct /> },
+      { path: "edit-product/:productId", element: <EditProduct /> },
       { path: "products", element: <AdminProduct /> },
       { path: "orders", element: <AdminOrders /> },
       { path: "users/orders/:userId", element: <ShowUserOrders /> },

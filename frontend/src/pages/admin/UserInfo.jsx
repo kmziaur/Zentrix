@@ -66,9 +66,23 @@ const UserInfo = () => {
             ) : user ? (
               <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
                 <div className="space-y-4">
-                  <div>
-                    <h2 className="text-xl font-semibold text-slate-900">{user.firstName} {user.lastName}</h2>
-                    <p className="text-sm text-slate-500">{user.email}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="h-20 w-20 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                      {user.profilePic ? (
+                        <img
+                          src={user.profilePic}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-sm text-slate-500">No image</div>
+                      )}
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-900">{user.firstName} {user.lastName}</h2>
+                      <p className="text-sm text-slate-500">{user.email}</p>
+                    </div>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">

@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 const AdminProduct = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const loadProducts = async () => {
@@ -16,6 +19,7 @@ const AdminProduct = () => {
       const response = await axios.get("http://localhost:8000/api/v1/product/getallproducts");
       if (response.data.success) {
         setProducts(response.data.products);
+        setFilteredProducts(response.data.products);
       }
     } catch (error) {
       console.error(error);
@@ -24,6 +28,20 @@ const AdminProduct = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(
+        (product) =>
+          product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchQuery, products]);
 
   const handleDelete = async (productId) => {
     const confirmed = window.confirm("Delete this product permanently?");
@@ -65,13 +83,25 @@ const AdminProduct = () => {
           </div>
         </div>
 
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <Input
+            placeholder="Search by product name, category, or brand..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="md:max-w-md"
+          />
+          <p className="text-sm text-slate-500">
+            {filteredProducts.length} product{filteredProducts.length !== 1 ? "s" : ""} found
+          </p>
+        </div>
+
         {loading ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-600">
             Loading products...
           </div>
-        ) : products.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <div className="grid gap-6 lg:grid-cols-2">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Card key={product._id} className="border-slate-200/80 shadow-sm">
                 <CardHeader>
                   <div className="flex items-center justify-between gap-4">
@@ -102,6 +132,9 @@ const AdminProduct = () => {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
+                    <Button onClick={() => navigate(`/dashboard/edit-product/${product._id}`)} className="bg-blue-600 hover:bg-blue-700">
+                      Edit
+                    </Button>
                     <Button onClick={() => handleDelete(product._id)} className="bg-red-600 hover:bg-red-700">
                       Delete
                     </Button>
@@ -112,7 +145,7 @@ const AdminProduct = () => {
           </div>
         ) : (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white/70 p-10 text-center text-slate-500">
-            No products found. Add a product to populate the catalog.
+            {searchQuery ? "No products match your search. Try a different query." : "No products found. Add a product to populate the catalog."}
           </div>
         )}
       </div>
