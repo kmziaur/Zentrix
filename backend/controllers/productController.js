@@ -8,7 +8,7 @@ export const addProduct = async (req, res) => {
     const { productName, productDesc, productPrice, category, brand } =
       req.body;
 
-    const userId = req.id;
+    const userId = req.user?.id || req.id;
 
     if (!productName || !productDesc || !productPrice || !category || !brand) {
       return res.status(400).json({
