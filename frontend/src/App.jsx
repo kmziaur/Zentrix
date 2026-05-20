@@ -13,6 +13,9 @@ import { setUser } from "./redux/userSlice";
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
+import Payment from "./pages/Payment";
+import PaymentGateway from "./pages/PaymentGateway";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 import Dashboard from "./pages/Dashboard";
 import AdminSales from "./pages/admin/AdminSales";
@@ -71,6 +74,33 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <Navbar />
         <Cart />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/payment",
+    element: (
+      <ProtectedRoute>
+        <Navbar />
+        <Payment />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/payment/gateway",
+    element: (
+      <ProtectedRoute>
+        <Navbar />
+        <PaymentGateway />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/payment/success",
+    element: (
+      <ProtectedRoute>
+        <Navbar />
+        <PaymentSuccess />
       </ProtectedRoute>
     ),
   },

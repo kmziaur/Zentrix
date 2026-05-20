@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "@/redux/productSlice";
@@ -17,7 +17,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [distanceKm, setDistanceKm] = useState(5); // later from API
+  const [distanceKm] = useState(5); // later from API
 
   const SHIPPING_BASE = 60;
 
@@ -38,7 +38,7 @@ const Cart = () => {
         if (res.data.success) {
           dispatch(setCart(res.data.cart));
         }
-      } catch (error) {
+      } catch {
         toast.error("Failed to load cart");
       } finally {
         setLoading(false);
@@ -79,7 +79,7 @@ const Cart = () => {
       if (res.data.success) {
         dispatch(setCart(res.data.cart));
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to update cart");
     }
   };
@@ -97,7 +97,7 @@ const Cart = () => {
         dispatch(setCart(res.data.cart));
         toast.success("Item removed");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to remove item");
     }
   };
@@ -117,33 +117,27 @@ const Cart = () => {
         setDiscount(res.data.discount);
         toast.success("Coupon applied");
       }
-    } catch (error) {
+    } catch {
       setDiscount(0);
       toast.error("Invalid coupon");
     }
   };
 
   // PAYMENT
-  const handleCheckout = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-
-      // Example: Stripe / SSLCommerz session creation
-      const res = await axios.post(
-        "http://localhost:8000/api/v1/payment/create-session",
-        {
-          amount: total,
-          items: cart.items,
-        },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-
-      if (res.data.url) {
-        window.location.href = res.data.url; // redirect to gateway
-      }
-    } catch (error) {
-      toast.error("Payment initiation failed");
+  const handleCheckout = () => {
+    if (!cart?.items?.length) {
+      toast.error("Your cart is empty.");
+      navigate("/products");
+      return;
     }
+
+    navigate("/payment", {
+      state: {
+        discount,
+        coupon,
+        distanceKm,
+      },
+    });
   };
 
   if (loading) {
