@@ -12,6 +12,7 @@ import {
   verify,
   verifyOTP,
 } from "../controllers/userController.js";
+import { getUserOrders } from "../controllers/orderController.js";
 import { isAdmin, isAuthenticated } from "../middleware/isAuthenticated.js";
 import { singleUpload } from "../middleware/multer.js";
 
@@ -28,6 +29,7 @@ router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.get("/all-user", isAuthenticated, isAdmin, allUser);
 router.get("/get-user/:id", isAuthenticated, isAdmin, getUserById);
+router.get("/orders", isAuthenticated, getUserOrders);
 router.put("/update/:id",isAuthenticated,singleUpload,updateUser);
 
 export default router;

@@ -21,6 +21,25 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
+export const getUserOrders = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const orders = await Order.find({ user: userId })
+      .populate("items.productId", "productName productPrice category brand")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const getOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;

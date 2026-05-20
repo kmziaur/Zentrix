@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -35,8 +35,12 @@ const Profile = () => {
     profilePic: "",
     role: "",
   });
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState("");
 
   // Sync Redux user → local state
+  // eslint-disable-next-line
   useEffect(() => {
     if (user) {
       setUpdateUser({
@@ -79,6 +83,30 @@ const Profile = () => {
         ...updateUser,
         profilePic: URL.createObjectURL(selectedFile),
       });
+    }
+  };
+
+  const fetchOrders = async () => {
+    setOrdersLoading(true);
+    setOrdersError("");
+
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const res = await axios.get("http://localhost:8000/api/v1/user/orders", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (res.data.success) {
+        setOrders(res.data.orders);
+      } else {
+        setOrdersError(res.data.message || "Unable to load orders.");
+      }
+    } catch {
+      setOrdersError("Unable to load orders. Please try again.");
+    } finally {
+      setOrdersLoading(false);
     }
   };
 
@@ -129,6 +157,11 @@ const Profile = () => {
     }
   };
 
+  // eslint-disable-next-line
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 pt-30 pb-10">
       <Tabs defaultValue="profile" className="max-w-7xl mx-auto items-center">
@@ -149,7 +182,7 @@ const Profile = () => {
               <div className="flex flex-col items-center">
                 <img
                   src={
-                    Boolean(updateUser?.profilePic?.trim())
+                    updateUser?.profilePic?.trim()
                       ? updateUser.profilePic
                       : userLogo
                   }
@@ -239,7 +272,82 @@ const Profile = () => {
 
         {/* ORDERS */}
         <TabsContent value="orders">
-          <h2>Order page</h2>
+          <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-sm">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Your Orders</h2>
+
+            {ordersLoading ? (
+              <p className="text-center text-slate-500">Loading your orders...</p>
+            ) : ordersError ? (
+              <p className="text-center text-red-500">{ordersError}</p>
+            ) : !orders.length ? (
+              <p className="text-center text-slate-500">
+                You have no orders yet. Start shopping to place your first order.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <div key={order._id} className="rounded-2xl border border-slate-200 p-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm text-slate-500">Order ID</p>
+                        <p className="font-semibold text-slate-900">#{order._id.slice(-8)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-slate-500">Date</p>
+                        <p className="font-medium text-slate-900">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-slate-500">Status</p>
+                        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
+                          order.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : order.status === "processing"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "shipped"
+                            ? "bg-purple-100 text-purple-800"
+                            : order.status === "delivered"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}>
+                          {order.status}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm text-slate-500">Total</p>
+                        <p className="font-semibold text-slate-900">৳ {order.totalAmount.toLocaleString("en-BD")}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-xl bg-slate-50 p-4">
+                        <p className="text-sm text-slate-500">Items</p>
+                        <p className="font-medium text-slate-900">{order.items?.length || 0} products</p>
+                      </div>
+                      <div className="rounded-xl bg-slate-50 p-4">
+                        <p className="text-sm text-slate-500">Payment</p>
+                        <p className="font-medium text-slate-900">{order.paymentMethod || "Not set"}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-sm text-slate-500">Order items</p>
+                      <div className="mt-2 space-y-2">
+                        {order.items.map((item) => (
+                          <div key={`${order._id}-${item.productId?._id || item.productId}`} className="flex justify-between rounded-xl border border-slate-200 p-3">
+                            <div>
+                              <p className="font-medium text-slate-900">{item.productId?.productName || "Product"}</p>
+                              <p className="text-sm text-slate-500">Qty {item.quantity}</p>
+                            </div>
+                            <p className="font-semibold text-slate-900">৳ {(item.price * item.quantity).toLocaleString("en-BD")}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
