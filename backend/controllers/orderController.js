@@ -1,13 +1,25 @@
 import Order from "../models/orderModel.js";
+import { Product } from "../models/productModel.js";
 
 const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate("user", "firstName lastName email role")
-      .populate("items.productId", "productName productPrice category brand")
-      .sort({ createdAt: -1 });
+    const isSuperAdmin = req.user.role === "super-admin";
+    let orders;
+
+    if (isSuperAdmin) {
+      orders = await Order.find()
+        .populate("user", "firstName lastName email role")
+        .populate("items.productId", "productName productPrice category brand")
+        .sort({ createdAt: -1 });
+    } else {
+      const productIds = await Product.find({ userId: req.user.id }).distinct("_id");
+      orders = await Order.find({ "items.productId": { $in: productIds } })
+        .populate("user", "firstName lastName email role")
+        .populate("items.productId", "productName productPrice category brand")
+        .sort({ createdAt: -1 });
+    }
 
     return res.status(200).json({
       success: true,
@@ -43,7 +55,18 @@ export const getUserOrders = async (req, res) => {
 export const getOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const orders = await Order.find({ user: userId })
+    const isSuperAdmin = req.user.role === "super-admin";
+    let query = { user: userId };
+
+    if (!isSuperAdmin) {
+      const productIds = await Product.find({ userId: req.user.id }).distinct("_id");
+      query = {
+        user: userId,
+        "items.productId": { $in: productIds },
+      };
+    }
+
+    const orders = await Order.find(query)
       .populate("user", "firstName lastName email role")
       .populate("items.productId", "productName productPrice category brand")
       .sort({ createdAt: -1 });

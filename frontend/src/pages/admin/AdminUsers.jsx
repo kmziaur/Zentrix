@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 const AdminUsers = () => {
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,8 +37,12 @@ const AdminUsers = () => {
   };
 
   useEffect(() => {
+    if (user && user.role !== "super-admin") {
+      navigate("/dashboard", { replace: true });
+      return;
+    }
     loadUsers();
-  }, []);
+  }, [user, navigate]);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -60,9 +67,9 @@ const AdminUsers = () => {
     <div className="pt-10 pb-10">
       <div className="mx-auto max-w-7xl space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-950">User Management</h1>
+          <h1 className="text-3xl font-bold text-slate-950">Admin Management</h1>
           <p className="text-sm text-slate-500">
-            Browse registered users and access their profile or order history.
+            Browse admin accounts and manage access for your marketplace operators.
           </p>
         </div>
 
@@ -78,7 +85,7 @@ const AdminUsers = () => {
 
         <Card className="border-slate-200/80 shadow-sm">
           <CardHeader>
-            <CardTitle>Registered users</CardTitle>
+            <CardTitle>Admin accounts</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (

@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
 const UserInfo = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user: currentUser } = useSelector((state) => state.user);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -24,16 +27,20 @@ const UserInfo = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Unable to load user.");
+      const msg = error.response?.data?.message || "Unable to load user.";
+      toast.error(msg);
+      if (error.response?.status === 403) {
+        navigate("/dashboard", { replace: true });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      loadUser();
-    }
+    if (!id) return;
+    loadUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (

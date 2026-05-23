@@ -1,6 +1,8 @@
 import { Product } from "../models/productModel.js";
 import getDataUri from "../utils/dataUri.js";
 import cloudinary from "cloudinary";
+import jwt from "jsonwebtoken";
+import { User } from "../models/userModel.js";
 
 // CREATE PRODUCT
 export const addProduct = async (req, res) => {
@@ -42,7 +44,7 @@ export const addProduct = async (req, res) => {
       category,
       brand,
       productImg: productImg, // array of objects here i have to edit
-      userId: req.user._id,
+      userId: req.user.id,
     });
 
     return res.status(201).json({
@@ -61,7 +63,25 @@ export const addProduct = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
   try {
-    const products = await Product.find();
+    let filter = {};
+
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      try {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const user = await User.findById(decoded.id);
+        if (user && (user.role === "admin" || user.role === "super-admin")) {
+          if (user.role === "admin") {
+            filter = { userId: user._id };
+          }
+        }
+      } catch (err) {
+        // ignore invalid token, continue with public listing
+      }
+    }
+
+    const products = await Product.find(filter);
 
     if (!products) {
       return res.status(404).json({
@@ -117,6 +137,13 @@ export const deleteProduct = async (req, res) => {
       });
     }
 
+    if (req.user.role !== "super-admin" && product.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this product.",
+      });
+    }
+
     // delete images from cloudinary
     if (product.productImg && product.productImg.length > 0) {
       for (let img of product.productImg) {
@@ -147,6 +174,13 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Product not found",
+      });
+    }
+
+    if (req.user.role !== "super-admin" && product.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this product.",
       });
     }
 

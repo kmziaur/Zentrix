@@ -397,7 +397,7 @@ export const resetPassword = async (req, res) => {
 
 export const allUser = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({ role: { $in: ["admin", "super-admin"] } });
     return res.status(200).json({
       success: true,
       users,
@@ -419,19 +419,41 @@ export const getUserById = async (req, res) => {
         message: "User ID is required",
       });
     }
-    const user = await User.findById(id).select(
+    const targetUser = await User.findById(id).select(
       "-password -otp -otpExpiry -token",
     );
-    if (!user) {
+
+    if (!targetUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
 
+    const requester = req.user; // from isAuthenticated middleware
+
+    // If target is an admin or super-admin, only super-admins can view their profile
+    if (targetUser.role === "admin" || targetUser.role === "super-admin") {
+      if (requester.role !== "super-admin") {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied",
+        });
+      }
+    } else {
+      // target is a regular user (customer)
+      // allow if requester is admin/super-admin or the owner
+      if (requester.role !== "admin" && requester.role !== "super-admin" && requester.id !== id) {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied",
+        });
+      }
+    }
+
     return res.status(200).json({
       success: true,
-      user,
+      user: targetUser,
     });
   } catch (error) {
     return res.status(500).json({

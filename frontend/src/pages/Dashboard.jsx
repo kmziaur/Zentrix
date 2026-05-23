@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
@@ -21,6 +22,8 @@ import { toast } from "sonner";
 
 const Dashboard = () => {
   const location = useLocation();
+  const { user } = useSelector((state) => state.user);
+  const isSuperAdmin = user?.role === "super-admin";
 
   const [dashboardData, setDashboardData] = useState({
     totalOrders: 0,
@@ -144,11 +147,15 @@ const Dashboard = () => {
       path: "/dashboard/products",
       icon: Boxes,
     },
-    {
-      name: "Users",
-      path: "/dashboard/user",
-      icon: Users,
-    },
+    ...(isSuperAdmin
+      ? [
+          {
+            name: "Users",
+            path: "/dashboard/user",
+            icon: Users,
+          },
+        ]
+      : []),
     {
       name: "Orders",
       path: "/dashboard/orders",
@@ -172,10 +179,12 @@ const Dashboard = () => {
             Seller Center
           </span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight">
-            Zentrix Admin
+            {isSuperAdmin ? "Zentrix Super Admin" : "Zentrix Admin"}
           </h1>
           <p className="mt-2 text-sm text-pink-200/80">
-            Manage products, orders, users and sales performance.
+            {isSuperAdmin
+              ? "Manage administrators, store operations, and system-wide metrics."
+              : "Access your own product and order performance, plus customer data for your store only."}
           </p>
         </div>
 
@@ -221,7 +230,9 @@ const Dashboard = () => {
                   Store performance overview
                 </h1>
                 <p className="mt-3 max-w-2xl text-base text-slate-600">
-                  Track your orders, revenue, customers, and product performance from one central dashboard.
+                  {isSuperAdmin
+                    ? "As super admin, you can oversee all admins, orders, products, and customers."
+                    : "Track your products, orders, customers, and revenue for your own store data only."}
                 </p>
               </div>
 

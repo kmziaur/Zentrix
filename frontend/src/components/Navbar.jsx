@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
@@ -13,7 +13,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector((store) => store.product);
-  const admin = user?.role === "admin"? true : false;
+  const admin = user?.role === "admin" || user?.role === "super-admin";
 
   const logoutHandler = async () => {
     try {

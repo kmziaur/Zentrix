@@ -16,7 +16,12 @@ const AdminProduct = () => {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8000/api/v1/product/getallproducts");
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.get("http://localhost:8000/api/v1/product/getallproducts", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       if (response.data.success) {
         setProducts(response.data.products);
         setFilteredProducts(response.data.products);

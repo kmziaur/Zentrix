@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -96,7 +97,13 @@ const AdminOrders = () => {
                       <tr key={order._id} className="hover:bg-slate-50">
                         <td className="px-5 py-4 text-sm font-medium text-slate-900">#{order._id.slice(-8)}</td>
                         <td className="px-5 py-4 text-sm text-slate-600">
-                          {order.user?.firstName} {order.user?.lastName}
+                          {order.user?._id ? (
+                            <Link to={`/dashboard/user/${order.user._id}`} className="text-pink-600 font-medium hover:underline">
+                              {order.user?.firstName} {order.user?.lastName}
+                            </Link>
+                          ) : (
+                            `${order.user?.firstName || ''} ${order.user?.lastName || ''}`
+                          )}
                         </td>
                         <td className="px-5 py-4 text-sm text-slate-600">
                           {order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0)}
