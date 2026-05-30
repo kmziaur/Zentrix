@@ -1,4 +1,4 @@
-# 🚀 ZENTRIX
+# Zentrix
 
 ZENTRIX is a modern full-stack e-commerce web application built using the MERN Stack (MongoDB, Express.js, React.js, Node.js). The platform provides a complete online shopping experience with authentication, product management, cart functionality, order management, admin dashboard access, and a responsive user interface.
 
@@ -271,14 +271,9 @@ ZENTRIX is fully optimized for:
 ## 🚀 Upcoming Features
 
 * SSLCOMMERZ Payment Gateway
-* Stripe Integration
 * Wishlist System
 * Product Reviews & Ratings
-* Search & Filtering
 * Coupon & Discount System
-* Order Tracking
-* Email Notifications
-* Analytics Dashboard
 * Multi-Vendor Support
 
 ---
@@ -291,18 +286,6 @@ ZENTRIX is fully optimized for:
 * Optimized API Calls
 * Protected Route System
 * Efficient Database Queries
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a new branch
-3. Commit your changes
-4. Push to GitHub
-5. Open a Pull Request
 
 ---
 
