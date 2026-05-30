@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const PaymentGateway = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const PaymentGateway = () => {
 
       try {
         const token = localStorage.getItem("accessToken");
-        const res = await axios.get(`http://localhost:8000/api/v1/payment/order/${orderId}`, {
+        const res = await axios.get(`${API_BASE_URL}/api/v1/payment/order/${orderId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -49,7 +51,7 @@ const PaymentGateway = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
-        `http://localhost:8000/api/v1/payment/confirm/${orderId}`,
+        `${API_BASE_URL}/api/v1/payment/confirm/${orderId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       );

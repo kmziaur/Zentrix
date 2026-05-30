@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +59,7 @@ const Payment = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
-        "http://localhost:8000/api/v1/payment/create-session",
+        `${API_BASE_URL}/api/v1/payment/create-session`,
         {
           paymentMethod,
           shippingAddress,
@@ -68,13 +70,20 @@ const Payment = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      if (res.data.paymentUrl) {
-        window.location.href = res.data.paymentUrl;
+      if (res.data.checkoutUrl) {
+        // Redirect to Stripe checkout page
+        window.location.href = res.data.checkoutUrl;
       } else {
-        toast.error("Unable to start payment. Please try again.");
+        const message = res.data?.message || "Unable to start payment. Please try again.";
+        toast.error(message);
       }
     } catch (error) {
-      toast.error("Payment initiation failed.");
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Payment initiation failed. Please check your credentials and cart.";
+      console.error("Payment initiation error:", error);
+      toast.error(message);
     }
   };
 

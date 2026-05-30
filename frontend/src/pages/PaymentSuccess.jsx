@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true);
 
   const orderId = searchParams.get("orderId");
+  const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -23,7 +26,18 @@ const PaymentSuccess = () => {
 
       try {
         const token = localStorage.getItem("accessToken");
-        const res = await axios.get(`http://localhost:8000/api/v1/payment/order/${orderId}`, {
+        
+        // Confirm payment with session ID if available
+        if (sessionId && !order) {
+          await axios.post(
+            `${API_BASE_URL}/api/v1/payment/confirm/${orderId}`,
+            { sessionId },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        }
+
+        // Fetch order details
+        const res = await axios.get(`${API_BASE_URL}/api/v1/payment/order/${orderId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -42,7 +56,7 @@ const PaymentSuccess = () => {
     };
 
     fetchOrder();
-  }, [orderId, navigate]);
+  }, [orderId, sessionId, navigate]);
 
   if (loading) {
     return <p className="text-center mt-10">Loading order details...</p>;

@@ -42,6 +42,22 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    stripePaymentIntentId: {
+      type: String,
+      default: "",
+    },
+    stripeStatus: {
+      type: String,
+      default: "pending",
+    },
+    stripeAmount: {
+      type: Number,
+      default: 0,
+    },
+    stripeCurrency: {
+      type: String,
+      default: "BDT",
+    },
     status: {
       type: String,
       enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
