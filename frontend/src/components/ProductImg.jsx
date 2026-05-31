@@ -8,31 +8,33 @@ const ProductImg = ({ images }) => {
 
   if (!imageList.length) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg text-gray-500">
+      <div className="flex h-80 items-center justify-center rounded-xl bg-gray-100 text-gray-500">
         No images available
       </div>
     );
   }
 
   return (
-    <div className="flex gap-5 w-max">
-      <div className="gap-5 flex flex-col">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+
+      {/* THUMBNAILS */}
+      <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
         {imageList.map((img, index) => (
           <img
             key={index}
             onClick={() => setMainImg(img.url)}
             src={img.url}
-            alt={`Product Image ${index + 1}`}
-            className="w-20 h-20 object-cover rounded-lg cursor-pointer border-2 border-gray-300"
+            className="h-14 w-14 min-w-[3.5rem] rounded-lg border object-cover cursor-pointer hover:opacity-80 sm:h-16 sm:w-16 sm:min-w-[4rem]"
           />
         ))}
       </div>
-      <div className="w-96 h-96">
+
+      {/* MAIN IMAGE */}
+      <div className="min-w-0 flex-1 overflow-hidden rounded-lg bg-gray-50 shadow-sm">
         <Zoom>
           <img
             src={mainImg}
-            alt="Main Product"
-            className="w-full h-full object-cover rounded-lg"
+            className="h-full w-full object-contain rounded-xl bg-white"
           />
         </Zoom>
       </div>

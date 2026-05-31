@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import { useNavigate } from "react-router-dom";
@@ -9,19 +8,17 @@ import { setCart } from "@/redux/productSlice";
 
 const ProductCard = ({ product, loading }) => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("accessToken");
+
   const addToCart = async (productId) => {
     try {
       const res = await axios.post(
         "http://localhost:8000/api/v1/cart/add",
         { productId, quantity: 1 },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
       );
 
       if (res.data.success) {
@@ -29,51 +26,55 @@ const ProductCard = ({ product, loading }) => {
         dispatch(setCart(res.data.cart));
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to add product");
     }
   };
 
-  const handleAddToCart = () => {
-    addToCart(product._id);
-  };
-
   return (
-    <div className="shadow-lg rounded-lg overflow-hidden h-max">
+    <div className="group w-full overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:shadow-lg">
+
       {/* IMAGE */}
-      <div className="flex justify-center items-center w-full h-full aspect-square overflow-hidden">
+      <div className="aspect-square overflow-hidden bg-slate-50">
         {loading ? (
-          <Skeleton className="w-full h-full rounded-lg" />
+          <Skeleton className="h-full w-full" />
         ) : (
           <img
             onClick={() => navigate(`/products/${product._id}`)}
-            src={product.productImg[0]?.url}
+            src={product.productImg?.[0]?.url}
             alt={product.productName}
-            className="w-45.5 h-47.5 transition-transform duration-300 hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
           />
         )}
       </div>
 
       {/* CONTENT */}
-      {loading ? (
-        <div className="px-2 space-y-2 my-2">
-          <Skeleton className="w-50 h-4" />
-          <Skeleton className="w-25 h-4" />
-          <Skeleton className="w-37.5 h-8" />
-        </div>
-      ) : (
-        <div className="px-2 space-y-1">
-          <h1 className="font-semibold h-12 line-clamp-2">
-            {product.productName}
-          </h1>
+      <div className="space-y-2 p-3 sm:p-4">
 
-          <h2 className="font-bold">৳{product.productPrice}</h2>
+        {loading ? (
+          <>
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-10 w-full" />
+          </>
+        ) : (
+          <>
+            <h1 className="line-clamp-2 text-sm sm:text-base font-semibold text-slate-900">
+              {product.productName}
+            </h1>
 
-          <Button onClick={handleAddToCart} className="bg-pink-600 mb-3 w-full">
-            Add to Cart
-          </Button>
-        </div>
-      )}
+            <p className="text-base font-bold text-slate-900">
+              ৳{product.productPrice}
+            </p>
+
+            <Button
+              onClick={() => addToCart(product._id)}
+              className="w-full bg-pink-600 text-white hover:bg-pink-700"
+            >
+              Add to Cart
+            </Button>
+          </>
+        )}
+      </div>
     </div>
   );
 };

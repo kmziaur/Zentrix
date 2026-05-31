@@ -40,7 +40,6 @@ const Profile = () => {
   const [ordersError, setOrdersError] = useState("");
 
   // Sync Redux user → local state
-  // eslint-disable-next-line
   useEffect(() => {
     if (user) {
       setUpdateUser({
@@ -157,40 +156,33 @@ const Profile = () => {
     }
   };
 
-  // eslint-disable-next-line
   useEffect(() => {
     fetchOrders();
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-30 pb-10">
-      <Tabs defaultValue="profile" className="max-w-7xl mx-auto items-center">
-        <TabsList>
+    <div className="min-h-screen bg-gray-100 pt-24 pb-10 px-4 sm:px-6 lg:px-8">
+      <Tabs defaultValue="profile" className="max-w-7xl mx-auto">
+        <TabsList className="justify-center">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
         </TabsList>
 
         {/* PROFILE */}
         <TabsContent value="profile">
-          <div className="flex flex-col justify-center items-center bg-gray-100">
-            <h1 className="font-bold mb-7 text-2xl text-gray-800">
-              Update Profile
-            </h1>
+          <div className="flex flex-col items-center bg-gray-100">
+            <h1 className="font-bold mb-7 text-2xl text-gray-800">Update Profile</h1>
 
-            <div className="w-full flex gap-10 justify-between items-start px-7 max-w-2xl">
+            <div className="flex w-full flex-col gap-10 rounded-3xl bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between md:p-8">
               {/* PROFILE IMAGE */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-4 md:w-80">
                 <img
-                  src={
-                    updateUser?.profilePic?.trim()
-                      ? updateUser.profilePic
-                      : userLogo
-                  }
+                  src={updateUser?.profilePic?.trim() ? updateUser.profilePic : userLogo}
                   alt="profile"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-pink-800"
+                  className="h-32 w-32 rounded-full object-cover border-4 border-pink-800"
                 />
 
-                <Label className="mt-4 cursor-pointer bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 whitespace-nowrap">
+                <Label className="cursor-pointer rounded-lg bg-pink-600 px-4 py-2 text-white hover:bg-pink-700 whitespace-nowrap">
                   Change Picture
                   <input
                     type="file"
@@ -202,11 +194,8 @@ const Profile = () => {
               </div>
 
               {/* FORM */}
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-4 shadow-lg p-5 rounded-lg bg-white"
-              >
-                <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="w-full space-y-4 md:max-w-2xl">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <Input
                     name="firstName"
                     value={updateUser.firstName}

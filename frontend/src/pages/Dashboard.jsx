@@ -34,6 +34,7 @@ const Dashboard = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const formatCurrency = (value) =>
     new Intl.NumberFormat("en-BD", {
@@ -173,11 +174,9 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900 mt-15">
-      <aside className="mt-15 w-72 bg-pink-700 text-white fixed inset-y-0 left-0 px-6 py-8 shadow-xl">
+      <aside className="hidden lg:block mt-15 w-72 bg-pink-700 text-white fixed inset-y-0 left-0 px-6 py-8 shadow-xl">
         <div className="mb-10">
-          <span className="text-sm uppercase tracking-[0.25em] text-pink-200">
-            Seller Center
-          </span>
+          <span className="text-sm uppercase tracking-[0.25em] text-pink-200">Seller Center</span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight">
             {isSuperAdmin ? "Zentrix Super Admin" : "Zentrix Admin"}
           </h1>
@@ -218,7 +217,57 @@ const Dashboard = () => {
         </div>
       </aside>
 
-      <main className="flex-1 ml-72 p-6 md:p-10">
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 bg-slate-950/40 lg:hidden" onClick={() => setSidebarOpen(false)}>
+          <aside className="fixed inset-y-0 left-0 z-50 w-72 bg-pink-700 text-white px-6 py-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-10">
+              <span className="text-sm uppercase tracking-[0.25em] text-pink-200">Seller Center</span>
+              <h1 className="mt-4 text-3xl font-bold tracking-tight">
+                {isSuperAdmin ? "Zentrix Super Admin" : "Zentrix Admin"}
+              </h1>
+              <p className="mt-2 text-sm text-pink-200/80">
+                {isSuperAdmin
+                  ? "Manage administrators, store operations, and system-wide metrics."
+                  : "Access your own product and order performance, plus customer data for your store only."}
+              </p>
+            </div>
+            <nav className="space-y-2">
+              {sidebarItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`group flex items-center gap-3 rounded-2xl px-4 py-3 transition ${
+                      isActive
+                        ? "bg-pink-600 text-white shadow-lg"
+                        : "text-pink-100 hover:bg-pink-600/80 hover:text-white"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+        </div>
+      )}
+
+      <main className="flex-1 lg:ml-72 p-6 md:p-10">
+        <div className="flex items-center justify-between gap-4 lg:hidden">
+          <div>
+            <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Admin Dashboard</p>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">Dashboard</h1>
+          </div>
+          <Button onClick={() => setSidebarOpen(true)} className="bg-pink-600 text-white">
+            Menu
+          </Button>
+        </div>
+
         {location.pathname === "/dashboard" && (
           <div className="space-y-8">
             <section className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

@@ -147,7 +147,7 @@ const Cart = () => {
   return (
     <div className="max-w-6xl mx-auto p-4">
       {!cart?.items?.length ? (
-        <div className="mt-50 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="mt-24 flex flex-col items-center justify-center text-center space-y-4 px-4 sm:px-0">
           {/* Icon */}
           <div className="bg-gray-100 p-6 rounded-full animate-bounce">
             <ShoppingBag size={60} className="text-gray-400" />
@@ -172,55 +172,55 @@ const Cart = () => {
           </button>
         </div>
       ) : (
-        <div className="flex flex-col lg:flex-row gap-6  mt-24">
+        <div className="flex flex-col gap-6 mt-24 lg:flex-row">
           {/* ITEMS */}
           <div className="flex-1 space-y-4">
             {cart.items.map((item) => (
               <div
                 key={item._id}
-                className="flex justify-between items-center border p-4 rounded-lg"
+                className="flex flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex gap-4 items-center">
+                <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
                   <img
                     src={item.productId?.productImg?.[0]?.url}
-                    className="w-20 h-20 object-cover rounded"
+                    className="h-20 w-20 rounded object-cover"
                   />
-                  <div>
-                    <h2 className="line-clamp-2 w-80 font-semibold">
+                  <div className="min-w-0">
+                    <h2 className="line-clamp-2 max-w-xs text-lg font-semibold text-slate-900">
                       {item.productId?.productName}
                     </h2>
                     <p className="text-pink-500">৳ {formatTk(item.price)}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-2 py-1">
+                    <Button
+                      onClick={() => updateQuantity(item.productId._id, "decrease")}
+                      className="h-9 w-9 rounded-full bg-pink-700 p-0 text-white"
+                    >
+                      -
+                    </Button>
+                    <span className="min-w-7 text-center text-base font-semibold">{item.quantity}</span>
+                    <Button
+                      onClick={() => updateQuantity(item.productId._id, "increase")}
+                      className="h-9 w-9 rounded-full bg-pink-700 p-0 text-white"
+                    >
+                      +
+                    </Button>
+                  </div>
+
+                  <p className="min-w-24 text-right text-sm font-semibold text-slate-900">
+                    ৳ {formatTk(item.price * item.quantity)}
+                  </p>
+
                   <Button
-                    onClick={() =>
-                      updateQuantity(item.productId._id, "decrease")
-                    }
-                    className="bg-pink-700"
+                    className="bg-red-500"
+                    onClick={() => removeItem(item.productId._id)}
                   >
-                    -
-                  </Button>
-                  <span>{item.quantity}</span>
-                  <Button
-                    onClick={() =>
-                      updateQuantity(item.productId._id, "increase")
-                    }
-                    className="bg-pink-700"
-                  >
-                    +
+                    Remove
                   </Button>
                 </div>
-
-                <p>৳ {formatTk(item.price * item.quantity)}</p>
-
-                <Button
-                  className="bg-red-500"
-                  onClick={() => removeItem(item.productId._id)}
-                >
-                  Remove
-                </Button>
               </div>
             ))}
           </div>
