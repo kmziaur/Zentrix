@@ -64,12 +64,12 @@ const Footer = () => {
 
             <p className="flex items-center gap-2 hover:text-pink-500 transition">
               <Phone className="w-4 h-4" />
-              +880 123 456 789
+              +880 1331966686
             </p>
 
             <p className="flex items-center gap-2 hover:text-pink-500 transition">
               <MapPin className="w-4 h-4" />
-              Dhaka, Bangladesh
+              Rangpur, Bangladesh
             </p>
           </div>
         </div>

@@ -16,6 +16,8 @@ import {
   Boxes,
   ClipboardList,
   RefreshCcw,
+  ChevronDown,
+  Menu,
 } from "lucide-react";
 
 import { toast } from "sonner";
@@ -173,7 +175,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 mt-15">
+    <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-100 text-slate-900 pt-16 md:pt-18 lg:pt-0 lg:mt-15">
       <aside className="hidden lg:block mt-15 w-72 bg-pink-700 text-white fixed inset-y-0 left-0 px-6 py-8 shadow-xl">
         <div className="mb-10">
           <span className="text-sm uppercase tracking-[0.25em] text-pink-200">Seller Center</span>
@@ -257,45 +259,60 @@ const Dashboard = () => {
         </div>
       )}
 
-      <main className="flex-1 lg:ml-72 p-6 md:p-10">
-        <div className="flex items-center justify-between gap-4 lg:hidden">
-          <div>
-            <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Admin Dashboard</p>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">Dashboard</h1>
+      <main className="flex-1 lg:ml-72 p-4 sm:p-6 lg:p-8 xl:p-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:hidden">
+            <div>
+              {/* <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Admin Dashboard</p> */}
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">Dashboard</h1>
+            </div>
+            <Button
+              onClick={() => setSidebarOpen(true)}
+              className="inline-flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-pink-200 hover:bg-pink-50 sm:w-fit"
+            >
+              <span className="flex items-center gap-2">
+                <Menu className="h-4 w-4 text-pink-600" />
+                Quick navigation
+              </span>
+              <ChevronDown className="h-4 w-4 text-slate-500" />
+            </Button>
           </div>
-          <Button onClick={() => setSidebarOpen(true)} className="bg-pink-600 text-white">
-            Menu
-          </Button>
-        </div>
 
-        {location.pathname === "/dashboard" && (
-          <div className="space-y-8">
+          {location.pathname === "/dashboard" && (
+          <div className="space-y-6 sm:space-y-8">
             <section className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div>
+              <div className="max-w-3xl">
                 <p className="text-sm uppercase tracking-[0.35em] text-slate-500">
                   Admin Dashboard
                 </p>
-                <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950">
+                <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                   Store performance overview
                 </h1>
-                <p className="mt-3 max-w-2xl text-base text-slate-600">
+                <p className="mt-3 text-sm text-slate-600 sm:text-base">
                   {isSuperAdmin
                     ? "As super admin, you can oversee all admins, orders, products, and customers."
                     : "Track your products, orders, customers, and revenue for your own store data only."}
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={fetchDashboardData} className="bg-pink-300 hover:bg-pink-700">
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  onClick={fetchDashboardData}
+                  className="bg-pink-600 text-white hover:bg-pink-700"
+                  aria-label="Refresh dashboard data"
+                >
                   <RefreshCcw className="h-4 w-4" />
                 </Button>
-                <Link to="/dashboard/add-product" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-700">
+                <Link
+                  to="/dashboard/add-product"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-pink-700"
+                >
                   Add Product
                 </Link>
               </div>
             </section>
 
-            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
               <Card className="border-slate-200/80 shadow-sm">
                 <CardHeader className="flex items-center gap-3">
                   <ShoppingCart className="text-pink-600" />
@@ -426,7 +443,7 @@ const Dashboard = () => {
             </section>
 
             <section className="grid gap-4 xl:grid-cols-[1.3fr_0.7fr]">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Card className="border-slate-200/80 shadow-sm">
                   <CardHeader>
                     <CardTitle>Average order value</CardTitle>
@@ -480,7 +497,7 @@ const Dashboard = () => {
                 </div>
                 <Link
                   to="/dashboard/orders"
-                  className="inline-flex items-center gap-2 rounded-full bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-700"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-pink-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-pink-700 sm:w-auto"
                 >
                   View all orders
                 </Link>
@@ -520,9 +537,10 @@ const Dashboard = () => {
               )}
             </section>
           </div>
-        )}
+          )}
 
-        <Outlet />
+          <Outlet />
+        </div>
       </main>
     </div>
   );

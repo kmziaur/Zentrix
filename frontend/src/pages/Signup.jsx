@@ -69,8 +69,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-pink-100">
-      <Card className="w-full max-w-sm">
+    <div className="min-h-screen bg-linear-to-b from-pink-100 via-white to-pink-50 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center justify-center">
+        <Card className="w-full max-w-md rounded-3xl border border-pink-100 shadow-xl shadow-pink-100/70">
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
           <CardDescription>
@@ -81,7 +82,7 @@ const Signup = () => {
         <form onSubmit={submitHandler}>
           <CardContent>
             <div className="flex flex-col gap-3">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
@@ -172,7 +173,8 @@ const Signup = () => {
             </p>
           </CardFooter>
         </form>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

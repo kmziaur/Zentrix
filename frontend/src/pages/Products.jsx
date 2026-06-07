@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilterSidebar from "@/components/FilterSidebar";
 import ProductCard from "@/components/ProductCard";
 
@@ -15,6 +15,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/redux/productSlice";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 
 const Products = () => {
   const { products } = useSelector((store) => store.product);
@@ -30,7 +31,7 @@ const Products = () => {
 
   const dispatch = useDispatch();
 
-  const getAllProducts = async () => {
+  const getAllProducts = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -48,11 +49,15 @@ const Products = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
-    getAllProducts();
-  }, []);
+    const timer = setTimeout(() => {
+      void getAllProducts();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [getAllProducts]);
 
   useEffect(() => {
     if (!allProducts.length) return;
@@ -104,9 +109,13 @@ const Products = () => {
           <div className="lg:hidden w-full flex flex-col gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="w-full rounded-xl border border-pink-200 bg-white px-4 py-3 text-sm font-semibold shadow-sm hover:bg-pink-50 transition"
+              className="inline-flex w-full items-center justify-between rounded-2xl border border-pink-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-pink-300 hover:bg-pink-50"
             >
-              {showFilters ? "Hide Filters" : "Show Filters"}
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-pink-600" />
+                {showFilters ? "Hide filters" : "Show filters"}
+              </span>
+              <ChevronDown className={`h-4 w-4 text-slate-500 transition ${showFilters ? "rotate-180" : ""}`} />
             </button>
 
             <div className="w-full md:hidden">

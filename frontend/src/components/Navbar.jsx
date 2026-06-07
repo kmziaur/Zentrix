@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import axios from "axios";
@@ -16,6 +16,7 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const admin =
     user?.role === "admin" || user?.role === "super-admin";
@@ -116,24 +117,36 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-4 lg:gap-8">
               <ul className="flex items-center gap-4 lg:gap-6 text-sm lg:text-base font-semibold text-slate-700">
-                {menuItems.map((item) => (
-                  <li key={item.to}>
-                    <Link
-                      to={item.to}
-                      className="hover:text-pink-600 transition"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {menuItems.map((item) => {
+                  const isActive = location.pathname === item.to;
+
+                  return (
+                    <li key={item.to}>
+                      <Link
+                        to={item.to}
+                        className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold transition ${
+                          isActive
+                            ? "text-pink-700 after:absolute after:left-1/2 after:bottom-1 after:h-0.5 after:w-1/5 after:-translate-x-1/2 after:rounded-full after:bg-pink-600"
+                            : "text-slate-700 hover:text-pink-700"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
 
                 {user && (
                   <li>
                     <Link
                       to={`/profile/${user._id}`}
-                      className="inline-flex items-center hover:text-pink-600 transition"
+                      className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold transition ${
+                        location.pathname === `/profile/${user._id}`
+                          ? "text-pink-700 after:absolute after:left-1/2 after:bottom-1 after:h-0.5 after:w-1/5 after:-translate-x-1/2 after:rounded-full after:bg-pink-600"
+                          : "text-slate-700 hover:text-pink-700"
+                      }`}
                     >
-                      <span className="max-w-[140px] truncate">
+                      <span className="max-w-35 truncate">
                         Hello,{" "}
                         <span className="text-pink-600">
                           {user.firstName}
@@ -147,7 +160,11 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/dashboard"
-                      className="hover:text-pink-600 transition"
+                      className={`relative px-3 py-2 text-sm font-semibold transition ${
+                        location.pathname.startsWith("/dashboard")
+                          ? "text-pink-700 after:absolute after:left-1/2 after:bottom-1 after:h-0.5 after:w-1/5 after:-translate-x-1/2 after:rounded-full after:bg-pink-600"
+                          : "text-slate-700 hover:text-pink-700"
+                      }`}
                     >
                       Dashboard
                     </Link>
@@ -176,7 +193,7 @@ const Navbar = () => {
                 </Button>
               ) : (
                 <Link to="/login">
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white">
+                  <Button className="bg-linear-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white">
                     Login
                   </Button>
                 </Link>
@@ -230,22 +247,34 @@ const Navbar = () => {
         }`}
       >
         <div className="p-4 space-y-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setMenuOpen(false)}
-              className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-pink-50 transition"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.to;
+
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setMenuOpen(false)}
+                className={`block px-4 py-3 text-sm font-semibold transition ${
+                  isActive
+                    ? "text-pink-700"
+                    : "text-slate-700 hover:text-pink-700"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
 
           {user && (
             <Link
               to={`/profile/${user._id}`}
               onClick={() => setMenuOpen(false)}
-              className=" block rounded-xl px-4 py-3 text-sm font-medium hover:bg-pink-50"
+              className={`block px-4 py-3 text-sm font-semibold transition ${
+                location.pathname === `/profile/${user._id}`
+                  ? "text-pink-700"
+                  : "text-slate-700 hover:text-pink-700"
+              }`}
             >
               Hello,{" "}
               <span className="text-pink-600">
@@ -258,7 +287,11 @@ const Navbar = () => {
             <Link
               to="/dashboard"
               onClick={() => setMenuOpen(false)}
-              className="block rounded-xl px-4 py-3 text-sm font-medium hover:bg-pink-50"
+              className={`block px-4 py-3 text-sm font-semibold transition ${
+                location.pathname.startsWith("/dashboard")
+                  ? "text-pink-700"
+                  : "text-slate-700 hover:text-pink-700"
+              }`}
             >
               Dashboard
             </Link>
@@ -280,7 +313,7 @@ const Navbar = () => {
                 to="/login"
                 onClick={() => setMenuOpen(false)}
               >
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <Button className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white">
                   Login
                 </Button>
               </Link>

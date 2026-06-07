@@ -99,7 +99,7 @@ const Payment = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4 pt-16 md:pt-18 lg:pt-0 lg:mt-15 min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-100 text-slate-900">
       <div className="mb-6">
         <h1 className="text-3xl font-semibold text-slate-900">Checkout</h1>
         <p className="text-sm text-slate-500 mt-1">
@@ -186,7 +186,7 @@ const Payment = () => {
           <CardContent className="space-y-4">
             <div className="space-y-3">
               {cart.items.map((item) => (
-                <div key={item._id} className="flex justify-between gap-3 border-b pb-3">
+                <div key={item._id} className="flex flex-col justify-between gap-3 border-b pb-3">
                   <div>
                     <p className="font-medium text-slate-900">{item.productId?.productName || "Product"}</p>
                     <p className="text-sm text-slate-500">Qty: {item.quantity}</p>

@@ -160,29 +160,48 @@ const Profile = () => {
     fetchOrders();
   }, []);
 
+  const getOrderCardStyle = (status = "") => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "bg-gradient-to-br from-amber-50 via-white to-orange-100 border-amber-100";
+      case "processing":
+        return "bg-gradient-to-br from-sky-50 via-white to-indigo-100 border-sky-100";
+      case "shipped":
+        return "bg-gradient-to-br from-violet-50 via-white to-fuchsia-100 border-violet-100";
+      case "delivered":
+        return "bg-gradient-to-br from-emerald-50 via-white to-teal-100 border-emerald-100";
+      default:
+        return "bg-gradient-to-br from-rose-50 via-white to-pink-100 border-rose-100";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 pt-24 pb-10 px-4 sm:px-6 lg:px-8">
-      <Tabs defaultValue="profile" className="max-w-7xl mx-auto">
-        <TabsList className="justify-center">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="orders">Orders</TabsTrigger>
+      <Tabs defaultValue="profile" className="mx-auto w-full max-w-7xl px-1 sm:px-0">
+        <TabsList className="mx-auto flex w-full max-w-md flex-wrap items-center justify-center gap-2 rounded-full bg-pink-700 p-1 shadow-sm sm:max-w-lg sm:gap-3">
+          <TabsTrigger value="profile" className="flex-1 rounded-full px-4 py-2 text-sm font-medium sm:flex-none sm:px-5">
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="orders" className="flex-1 rounded-full px-4 py-2 text-sm font-medium sm:flex-none sm:px-5">
+            Orders
+          </TabsTrigger>
         </TabsList>
 
         {/* PROFILE */}
         <TabsContent value="profile">
           <div className="flex flex-col items-center bg-gray-100">
-            <h1 className="font-bold mb-7 text-2xl text-gray-800">Update Profile</h1>
+            <h1 className="mb-6 text-xl font-bold text-gray-800 sm:text-2xl lg:mb-7">Update Profile</h1>
 
-            <div className="flex w-full flex-col gap-10 rounded-3xl bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between md:p-8">
+            <div className="flex w-full flex-col gap-8 rounded-3xl bg-white p-4 shadow-sm sm:p-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10 lg:p-8">
               {/* PROFILE IMAGE */}
-              <div className="flex flex-col items-center gap-4 md:w-80">
+              <div className="flex w-full flex-col items-center gap-4 lg:w-80">
                 <img
                   src={updateUser?.profilePic?.trim() ? updateUser.profilePic : userLogo}
                   alt="profile"
-                  className="h-32 w-32 rounded-full object-cover border-4 border-pink-800"
+                  className="h-28 w-28 rounded-full border-4 border-pink-800 object-cover sm:h-32 sm:w-32"
                 />
 
-                <Label className="cursor-pointer rounded-lg bg-pink-600 px-4 py-2 text-white hover:bg-pink-700 whitespace-nowrap">
+                <Label className="cursor-pointer whitespace-nowrap rounded-lg bg-pink-600 px-4 py-2 text-white transition hover:bg-pink-700">
                   Change Picture
                   <input
                     type="file"
@@ -194,8 +213,8 @@ const Profile = () => {
               </div>
 
               {/* FORM */}
-              <form onSubmit={handleSubmit} className="w-full space-y-4 md:max-w-2xl">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="w-full space-y-4 lg:max-w-2xl">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Input
                     name="firstName"
                     value={updateUser.firstName}
@@ -261,8 +280,8 @@ const Profile = () => {
 
         {/* ORDERS */}
         <TabsContent value="orders">
-          <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Your Orders</h2>
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+            <h2 className="mb-4 text-xl font-semibold text-slate-900 sm:text-2xl">Your Orders</h2>
 
             {ordersLoading ? (
               <p className="text-center text-slate-500">Loading your orders...</p>
@@ -275,8 +294,11 @@ const Profile = () => {
             ) : (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order._id} className="rounded-2xl border border-slate-200 p-4">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div
+                    key={order._id}
+                    className={`rounded-2xl border p-4 shadow-sm transition hover:shadow-md ${getOrderCardStyle(order.status)}`}
+                  >
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                       <div>
                         <p className="text-sm text-slate-500">Order ID</p>
                         <p className="font-semibold text-slate-900">#{order._id.slice(-8)}</p>
@@ -307,12 +329,12 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-xl bg-slate-50 p-4">
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      <div className="rounded-xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-100">
                         <p className="text-sm text-slate-500">Items</p>
                         <p className="font-medium text-slate-900">{order.items?.length || 0} products</p>
                       </div>
-                      <div className="rounded-xl bg-slate-50 p-4">
+                      <div className="rounded-xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-100">
                         <p className="text-sm text-slate-500">Payment</p>
                         <p className="font-medium text-slate-900">{order.paymentMethod || "Not set"}</p>
                       </div>
@@ -322,8 +344,8 @@ const Profile = () => {
                       <p className="text-sm text-slate-500">Order items</p>
                       <div className="mt-2 space-y-2">
                         {order.items.map((item) => (
-                          <div key={`${order._id}-${item.productId?._id || item.productId}`} className="flex justify-between rounded-xl border border-slate-200 p-3">
-                            <div>
+                          <div key={`${order._id}-${item.productId?._id || item.productId}`} className="flex flex-col gap-2 rounded-xl border border-white/70 bg-white/80 p-3 shadow-sm sm:flex-row sm:items-start sm:justify-between">
+                            <div className="min-w-0">
                               <p className="font-medium text-slate-900">{item.productId?.productName || "Product"}</p>
                               <p className="text-sm text-slate-500">Qty {item.quantity}</p>
                             </div>

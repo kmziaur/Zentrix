@@ -67,11 +67,11 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 pt-10 lg:mt-15 min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-100 text-slate-900 flex items-center justify-center ">
       <Card className="space-y-4 p-4">
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle>Payment Completed</CardTitle>
-        </CardHeader>
+        </CardHeader> */}
 
         <CardContent className="space-y-4">
           <div className="rounded-3xl border border-green-200 bg-green-50 p-6 text-center">
@@ -95,7 +95,7 @@ const PaymentSuccess = () => {
             <p>Order status: {order.status}</p>
           </div>
 
-          <div className="flex gap-3 flex-col sm:flex-row">
+          <div className="w-full h-20 flex gap-3 flex-col sm:flex-row">
             <Button onClick={() => navigate("/products")} className="flex-1 bg-pink-600">
               Continue Shopping
             </Button>
