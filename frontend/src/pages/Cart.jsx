@@ -31,7 +31,7 @@ const Cart = () => {
       try {
         const token = localStorage.getItem("accessToken");
 
-        const res = await axios.get("http://localhost:8000/api/v1/cart", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/cart`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -71,7 +71,7 @@ const Cart = () => {
       const token = localStorage.getItem("accessToken");
 
       const res = await axios.put(
-        "http://localhost:8000/api/v1/cart/update",
+        `${import.meta.env.VITE_API_URL}/api/v1/cart/update`,
         { productId, type },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -89,7 +89,7 @@ const Cart = () => {
       const token = localStorage.getItem("accessToken");
 
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/cart/remove/${productId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/cart/remove/${productId}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
@@ -108,7 +108,7 @@ const Cart = () => {
       const token = localStorage.getItem("accessToken");
 
       const res = await axios.post(
-        "http://localhost:8000/api/v1/coupon/apply",
+        `${import.meta.env.VITE_API_URL}/api/v1/coupon/apply`,
         { code: coupon, subtotal },
         { headers: { Authorization: `Bearer ${token}` } },
       );

@@ -34,7 +34,7 @@ const SingleProduct = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:8000/api/v1/product/getproduct/${productId}`,
+          `${import.meta.env.VITE_API_URL}/api/v1/product/getproduct/${productId}`,
         );
         if (res.data.success) {
           setFetchedProduct(res.data.product);
@@ -76,7 +76,7 @@ const SingleProduct = () => {
     try {
       setCartLoading(true);
       const res = await axios.post(
-        "http://localhost:8000/api/v1/cart/add",
+        `${import.meta.env.VITE_API_URL}/api/v1/cart/add`,
         {
           productId: product._id,
           quantity,

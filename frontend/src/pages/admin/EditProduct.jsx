@@ -25,7 +25,7 @@ const EditProduct = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/product/getproduct/${productId}`
+          `${import.meta.env.VITE_API_URL}/api/v1/product/getproduct/${productId}`
         );
         if (response.data.success) {
           const product = response.data.product;
@@ -105,7 +105,7 @@ const EditProduct = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/api/v1/product/update/${productId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/product/update/${productId}`,
         formData,
         {
           headers: {

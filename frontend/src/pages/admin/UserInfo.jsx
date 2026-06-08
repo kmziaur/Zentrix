@@ -16,7 +16,7 @@ const UserInfo = () => {
     try {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get(`http://localhost:8000/api/v1/user/get-user/${id}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/get-user/${id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

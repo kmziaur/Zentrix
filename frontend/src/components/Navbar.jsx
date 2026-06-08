@@ -31,7 +31,7 @@ const Navbar = () => {
       }
 
       const res = await axios.post(
-        "http://localhost:8000/api/v1/user/logout",
+        `${import.meta.env.VITE_API_URL}/api/v1/user/logout`,
         {},
         {
           headers: {
@@ -67,7 +67,7 @@ const Navbar = () => {
     const fetchCart = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/v1/cart",
+          `${import.meta.env.VITE_API_URL}/api/v1/cart`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

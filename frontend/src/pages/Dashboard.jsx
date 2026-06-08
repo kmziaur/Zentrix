@@ -49,7 +49,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-      const res = await axios.get("http://localhost:8000/api/v1/admin/dashboard", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/admin/dashboard`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

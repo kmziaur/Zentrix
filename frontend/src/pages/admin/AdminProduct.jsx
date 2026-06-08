@@ -17,7 +17,7 @@ const AdminProduct = () => {
     try {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get("http://localhost:8000/api/v1/product/getallproducts", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/product/getallproducts`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -54,7 +54,7 @@ const AdminProduct = () => {
 
     try {
       const accessToken = localStorage.getItem("accessToken");
-      await axios.delete(`http://localhost:8000/api/v1/product/delete/${productId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/v1/product/delete/${productId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

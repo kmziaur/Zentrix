@@ -91,7 +91,7 @@ const Profile = () => {
 
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const res = await axios.get("http://localhost:8000/api/v1/user/orders", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/orders`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -130,7 +130,7 @@ const Profile = () => {
       }
 
       const res = await axios.put(
-        `http://localhost:8000/api/v1/user/update/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/user/update/${userId}`,
         formData,
         {
           headers: {

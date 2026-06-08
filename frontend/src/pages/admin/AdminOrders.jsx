@@ -16,7 +16,7 @@ const AdminOrders = () => {
     try {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get("http://localhost:8000/api/v1/admin/orders", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/admin/orders`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -38,7 +38,7 @@ const AdminOrders = () => {
       setUpdating(true);
       const accessToken = localStorage.getItem("accessToken");
       await axios.put(
-        `http://localhost:8000/api/v1/admin/orders/status/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/orders/status/${orderId}`,
         { status },
         {
           headers: {

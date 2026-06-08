@@ -10,13 +10,15 @@ import adminRoute from "./routes/adminRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${PORT}`;
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 
 //middleware start
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: FRONTEND_URL,
     credentials: true,
 }));
 
@@ -36,6 +38,7 @@ app.use("/api/v1/admin",adminRoute);
 
 
 console.log("MONGO_URI =", process.env.MONGO_URI); // 👈 add this
+console.log(`Backend URL: ${BACKEND_URL}`);
 
 app.listen(PORT, () => {
     connectDB();
