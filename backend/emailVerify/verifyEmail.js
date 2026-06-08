@@ -4,10 +4,7 @@ import "dotenv/config";
 export const verifyEmail = async (token, email) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, 
-      family: 4, 
+      service: "gmail",
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -25,7 +22,7 @@ Thank you for registering on Zentrix.
 
 Please verify your email by clicking the link below:
 
-${process.env.FRONTEND_URL}/verify/${token}
+${process.env.FRONTEND_URL || "http://localhost:5173"}/verify/${token}
 
 If you did not create this account, you can ignore this email.
 
