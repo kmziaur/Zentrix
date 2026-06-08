@@ -12,14 +12,26 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${PORT}`;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-
+const ALLOWED_ORIGINS = [
+  FRONTEND_URL,
+  process.env.BACKEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+].filter(Boolean);
 
 //middleware start
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: FRONTEND_URL,
-    credentials: true,
+  origin(origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
 }));
 
 //middleware end
