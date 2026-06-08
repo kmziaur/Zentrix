@@ -1,13 +1,17 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
+const normalizeAppPassword = (value = "") => value.replace(/\s+/g, "").trim();
+
 export const verifyEmail = async (token, email) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        pass: normalizeAppPassword(process.env.MAIL_PASS),
       },
     });
 
