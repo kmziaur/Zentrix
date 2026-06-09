@@ -63,8 +63,8 @@ export const createPaymentSession = async (req, res) => {
       payment_method_types: ["card"],
       mode: "payment",
       customer_email: customerEmail,
-      success_url: `${frontendUrl}/payment/success?orderId=${order._id}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${frontendUrl}/payment?orderId=${order._id}&cancelled=true`,
+      success_url: `${frontendUrl}/#/payment/success?orderId=${order._id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontendUrl}/#/payment?orderId=${order._id}&cancelled=true`,
       line_items: cart.items.map((item) => ({
         price_data: {
           currency: "bdt",

@@ -39,13 +39,13 @@ export const register = async (req, res) => {
     newUser.token = token;
     await newUser.save();
 
-    const emailSent = await verifyEmail(token, email);
+    void verifyEmail(token, email).catch((error) => {
+      console.error("Verification email failed after registration:", error.message);
+    });
 
     return res.status(201).json({
       success: true,
-      message: emailSent
-        ? "User registered successfully"
-        : "User registered successfully. Verification email could not be sent right now. You can request a new one later.",
+      message: "User registered successfully. Verification email is being sent.",
       user: newUser,
     });
   } catch (error) {
@@ -60,7 +60,7 @@ export const verify = async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Authentication token is missing or invalid ",
       });
@@ -71,7 +71,7 @@ export const verify = async (req, res) => {
       decoded = jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        res.status(400).json({
+        return res.status(400).json({
           success: false,
           message: "The registration token has expired",
         });
@@ -84,7 +84,7 @@ export const verify = async (req, res) => {
 
     const user = await User.findById(decoded.id);
     if (!user) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "User not found",
       });
@@ -138,11 +138,13 @@ export const reVerify = async (req, res) => {
     user.token = token;
     await user.save();
 
-    await verifyEmail(token, email);
+    void verifyEmail(token, email).catch((error) => {
+      console.error("Verification email resend failed:", error.message);
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Verification email sent again",
+      message: "Verification email is being sent again",
     });
   } catch (error) {
     return res.status(500).json({
