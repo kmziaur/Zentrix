@@ -39,13 +39,16 @@ export const register = async (req, res) => {
     newUser.token = token;
     await newUser.save();
 
-    void verifyEmail(token, email).catch((error) => {
+    const emailSent = await verifyEmail(token, email).catch((error) => {
       console.error("Verification email failed after registration:", error.message);
+      return false;
     });
 
     return res.status(201).json({
       success: true,
-      message: "User registered successfully. Verification email is being sent.",
+      message: emailSent
+        ? "User registered successfully. Verification email sent."
+        : "User registered successfully, but verification email failed to send. Please request a new one later.",
       user: newUser,
     });
   } catch (error) {
