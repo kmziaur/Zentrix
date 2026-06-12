@@ -1,93 +1,71 @@
-# Zentrix
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=28&pause=1000&color=00C2FF&center=true&vCenter=true&width=800&lines=Zentrix+E-Commerce+Platform;Full+Stack+MERN+Application;Secure+%7C+Scalable+%7C+Modern+UI" />
+</p>
 
-Zentrix is a full-stack scalable e-commerce platform with admin control, secure authentication, and modern UI designed to simulate real-world online shopping systems.
-
----
+<p align="center">
+  <b>🚀 A production-style full-stack e-commerce platform built with MERN stack</b>
+</p>
 
 <p align="center">
   <a href="https://zentrix-green.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Click%20Here-blue?style=for-the-badge">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Now-blue?style=for-the-badge">
   </a>
+  <img src="https://img.shields.io/badge/Full--Stack-MERN-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge">
 </p>
-
-## 🌟 Features
-
-### 👤 User Features
-
-* User Registration & Login
-* JWT Authentication
-* Secure Password Hashing
-* Browse Products
-* Product Details Page
-* Add to Cart
-* Remove from Cart
-* Update Cart Quantity
-* Responsive Shopping Experience
-* User Profile Management
-
-### 🛒 E-Commerce Features
-
-* Product Listing System
-* Product Categories
-* Shopping Cart Management
-* Order Processing
-* Dynamic Product Details
-* Inventory Ready Architecture
-
-### 🛠 Admin Features
-
-* Admin Dashboard
-* Product Management (CRUD)
-* User Management
-* Order Monitoring
-* Role-Based Access Control
-* Protected Admin Routes
-
-### 🔒 Security Features
-
-* JWT Authentication
-* Protected API Routes
-* Role-Based Authorization
-* Secure Password Encryption using bcrypt
-* Environment Variable Protection
-
-
-## 📸 UI Showcase
 
 ---
 
-### 🏠 Home & Product Pages
+## ✨ Overview
 
+**Zentrix** is a modern, scalable e-commerce platform designed to simulate real-world online shopping systems with **authentication, admin control, cart management, and order processing**.
+
+Built with a focus on **clean architecture, scalability, and production-ready patterns**, it demonstrates full-stack engineering skills suitable for real-world applications.
+
+---
+
+## 🎯 Key Highlights
+
+- 🔐 Secure JWT Authentication System
+- 🛒 Full E-Commerce Flow (Cart → Order → Checkout)
+- 🛠 Admin Dashboard with Role-Based Access
+- ⚡ Optimized REST API Architecture
+- 📱 Fully Responsive UI (Mobile First)
+- 🧠 Scalable Modular Backend Design
+
+---
+
+## 🖥️ Live Demo
+
+👉 https://zentrix-green.vercel.app/
+
+---
+
+## 📸 Product Showcase
+
+### 🏠 Customer Experience
 <p align="center">
   <img src="images/home-page.png" width="48%">
   <img src="images/product-page.png" width="48%">
 </p>
 
----
-
-### 🛒 Cart Experience
-
+### 🛒 Shopping Cart Flow
 <p align="center">
   <img src="images/cart-page1.png" width="48%">
   <img src="images/cart-page2.png" width="48%">
 </p>
 
+### 🛠 Admin Control Panel
+<p align="center">
+  <img src="images/admin-dashboard.png" width="32%">
+  <img src="images/add-product.png" width="32%">
+  <img src="images/orders.png" width="32%">
+</p>
+
 ---
 
-### 🛠 Admin Dashboard
+## 🏗️ System Architecture
 
-<p align="center">
-  <img src="images/admin-dashboard.png" width="30%">
-  <img src="images/add-product.png" width="30%">
-  <img src="images/orders.png" width="30%">
-</p>
----
-
-### 🎯 Full Application Preview
-
-<p align="center">
-  <img src="images/home-page.png" width="90%">
-</p>
 
 ---
 
