@@ -46,7 +46,7 @@ ZENTRIX is a modern full-stack e-commerce web application built using the MERN S
 * Environment Variable Protection
 
 
-### Screenshots
+### 📸 Screenshots
 
 <p align="center">
   <img src="images/home-page.png" width="400">
