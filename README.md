@@ -4,6 +4,12 @@ ZENTRIX is a modern full-stack e-commerce web application built using the MERN S
 
 ---
 
+<p align="center">
+  <a href="https://zentrix-green.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Click%20Here-blue?style=for-the-badge">
+  </a>
+</p>
+
 ## 🌟 Features
 
 ### 👤 User Features
