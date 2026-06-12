@@ -337,8 +337,6 @@ ZENTRIX is fully optimized for:
 ---
 
 ## 🚀 Upcoming Features
-
-* SSLCOMMERZ Payment Gateway
 * Wishlist System
 * Product Reviews & Ratings
 * Coupon & Discount System
