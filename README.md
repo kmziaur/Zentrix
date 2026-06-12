@@ -33,11 +33,64 @@ Built with a focus on **clean architecture, scalability, and production-ready pa
 - 📱 Fully Responsive UI (Mobile First)
 - 🧠 Scalable Modular Backend Design
 
+ ## ✨ Features Overview
+
+<p align="center">
+  <img src="https://img.shields.io/badge/User%20System-Authentication-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/E--Commerce-Core%20Features-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Admin-Panel-red?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Security-High%20Level-purple?style=for-the-badge">
+</p>
+
 ---
 
-## 🖥️ Live Demo
+## 👤 User Experience
+> Seamless shopping experience with secure authentication
 
-👉 https://zentrix-green.vercel.app/
+- 🔐 User Registration & Login
+- 🛡 JWT Authentication System
+- 🔑 Secure Password Hashing (bcrypt)
+- 🛍 Browse Products Easily
+- 📄 Detailed Product Pages
+- 🛒 Add / Remove Items from Cart
+- 🔄 Update Cart Quantity in Real-Time
+- 📱 Fully Responsive UI Across Devices
+- 👤 User Profile Management
+
+---
+
+## 🛒 E-Commerce Engine
+> Core system powering the shopping experience
+
+- 📦 Product Listing System
+- 🏷 Category-Based Product Organization
+- 🛍 Shopping Cart Management System
+- 📦 Order Processing Workflow
+- ⚡ Dynamic Product Rendering
+- 🏗 Inventory-Ready Scalable Architecture
+
+---
+
+## 🛠 Admin Control Panel
+> Full control over platform operations
+
+- 📊 Admin Dashboard Analytics View
+- 🧾 Product CRUD Operations (Create / Read / Update / Delete)
+- 👥 User Management System
+- 📦 Order Monitoring & Management
+- 🔐 Role-Based Access Control (RBAC)
+- 🚧 Protected Admin Routes
+
+---
+
+## 🔒 Security & Protection
+> Enterprise-level security implementation
+
+- 🔐 JWT-Based Authentication
+- 🚫 Protected API Endpoints
+- 👮 Role-Based Authorization System
+- 🔑 Password Encryption using bcrypt
+- 🧪 Environment Variable Protection (.env security)
 
 ---
 
@@ -61,13 +114,6 @@ Built with a focus on **clean architecture, scalability, and production-ready pa
   <img src="images/add-product.png" width="32%">
   <img src="images/orders.png" width="32%">
 </p>
-
----
-
-## 🏗️ System Architecture
-
-
----
 
 ## 🏗 Tech Stack
 
