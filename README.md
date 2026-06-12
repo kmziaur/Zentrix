@@ -1,6 +1,6 @@
 # Zentrix
 
-ZENTRIX is a modern full-stack e-commerce web application built using the MERN Stack (MongoDB, Express.js, React.js, Node.js). The platform provides a complete online shopping experience with authentication, product management, cart functionality, order management, admin dashboard access, and a responsive user interface.
+Zentrix is a full-stack scalable e-commerce platform with admin control, secure authentication, and modern UI designed to simulate real-world online shopping systems.
 
 ---
 
@@ -52,17 +52,41 @@ ZENTRIX is a modern full-stack e-commerce web application built using the MERN S
 * Environment Variable Protection
 
 
-### 📸 Screenshots
+## 📸 UI Showcase
+
+---
+
+### 🏠 Home & Product Pages
 
 <p align="center">
-  <img src="images/home-page.png" width="400">
-  <img src="images/product-page.png" width="400">
-  <img src="images/footer.png" width="400">
-  <img src="images/cart-page1.png" width="400">
-  <img src="images/cart-page2.png" width="400">
-  <img src="images/admin-dashboard.png" width="400">
- <img src="images/orders.png" width="400">
-  <img src="images/add-product.png" width="400">
+  <img src="images/home-page.png" width="48%">
+  <img src="images/product-page.png" width="48%">
+</p>
+
+---
+
+### 🛒 Cart Experience
+
+<p align="center">
+  <img src="images/cart-page1.png" width="48%">
+  <img src="images/cart-page2.png" width="48%">
+</p>
+
+---
+
+### 🛠 Admin Dashboard
+
+<p align="center">
+  <img src="images/admin-dashboard.png" width="30%">
+  <img src="images/add-product.png" width="30%">
+  <img src="images/orders.png" width="30%">
+</p>
+---
+
+### 🎯 Full Application Preview
+
+<p align="center">
+  <img src="images/home-page.png" width="90%">
 </p>
 
 ---
